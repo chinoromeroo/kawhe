@@ -1,0 +1,83 @@
+:root {
+    --color-verde-pastel: #A5C9A5;
+    --color-crema: #FFF8E7;
+    --color-texto: #4A4A4A;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--color-crema);
+    color: var(--color-texto);
+}
+
+.hero-section {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/barista.webp');
+    background-size: cover;
+    background-position: center;
+    filter: blur(4px) brightness(0.7);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.logo {
+    max-width: 300px;
+    margin-bottom: 2rem;
+}
+
+.hero-text {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.menu-section {
+    padding: 4rem 0;
+    background-color: white;
+}
+
+.menu-category {
+    background-color: var(--color-verde-pastel);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.menu-category h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.menu-item {
+    background-color: var(--color-crema);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: transform 0.2s;
+}
+
+.menu-item:hover {
+    transform: translateY(-3px);
+}
