@@ -1,12 +1,14 @@
 :root {
-    --color-verde-pastel: #A5C9A5;
-    --color-crema: #FFF8E7;
+    --color-verde-principal: rgba(194,206,184,255);
+    --color-crema-principal: rgba(247,245,242,255);
     --color-texto: #4A4A4A;
+    --color-verde-oscuro: #9baa8f;
+    --color-sombra: rgba(0,0,0,0.1);
 }
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: var(--color-crema);
+    background-color: var(--color-crema-principal);
     color: var(--color-texto);
 }
 
@@ -38,11 +40,16 @@ body {
 .hero-content {
     position: relative;
     z-index: 2;
+    padding: 2rem;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
 }
 
 .logo {
     max-width: 300px;
     margin-bottom: 2rem;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
 }
 
 .hero-text {
@@ -52,32 +59,153 @@ body {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.menu-section {
-    padding: 4rem 0;
-    background-color: white;
+#menu-nav {
+    background-color: var(--color-verde-principal);
+    box-shadow: 0 4px 6px var(--color-sombra);
+    padding: 0.5rem 0;
 }
 
-.menu-category {
-    background-color: var(--color-verde-pastel);
-    border-radius: 10px;
-    padding: 1.5rem;
+#menu-nav .nav-link {
+    color: var(--color-texto);
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    margin: 0 0.3rem;
+}
+
+#menu-nav .nav-link:hover {
+    background-color: var(--color-verde-oscuro);
+    color: white;
+    transform: translateY(-2px);
+}
+
+#menu-nav .nav-logo {
+    height: 70px;
+    width: auto;
+    margin: 0 1rem;
+}
+
+.menu-section {
+    padding: 4rem 0;
+    background-color: var(--color-crema-principal);
+    font-family: 'Arial', sans-serif;
+}
+
+.menu-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
     margin-bottom: 2rem;
 }
 
-.menu-category h2 {
-    color: white;
+.menu-category {
+    margin-bottom: 3rem;
+}
+
+.categoria-title {
+    font-size: 1.5rem;
+    font-weight: bold;
     margin-bottom: 1.5rem;
-    text-align: center;
 }
 
 .menu-item {
-    background-color: var(--color-crema);
-    border-radius: 8px;
-    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 1rem;
-    transition: transform 0.2s;
+    position: relative;
 }
 
-.menu-item:hover {
-    transform: translateY(-3px);
+.menu-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3px;
+    border-bottom: 1px dotted var(--color-texto);
 }
+
+.producto-nombre {
+    padding-right: 10px;
+    background-color: var(--color-crema-principal);
+    position: relative;
+    z-index: 1;
+    padding-bottom: 3px;
+}
+
+.producto-descripcion {
+    font-size: 0.8rem;
+    color: #666;
+    font-style: italic;
+}
+
+.producto-precio {
+    padding-left: 10px;
+    background-color: var(--color-crema-principal);
+    position: relative;
+    z-index: 1;
+    padding-bottom: 3px;
+}
+
+@media (max-width: 768px) {
+    .menu-section .col-md-6 {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    #menu-nav .navbar-collapse {
+        background-color: var(--color-verde-principal);
+        padding: 1rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 6px var(--color-sombra);
+    }
+    
+    #menu-nav .nav-link {
+        text-align: center;
+        margin: 0.5rem 0;
+    }
+    
+    .menu-category {
+        margin: 1rem;
+    }
+}
+
+.ubicacion-section {
+    padding: 4rem 0;
+    background-color: var(--color-crema-principal);
+}
+
+.mapa-container {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+
+.direccion-container {
+    margin-top: 2rem;
+}
+
+.direccion-texto {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--color-texto);
+    margin-bottom: 0.5rem;
+}
+
+.horario-texto {
+    font-size: 1.1rem;
+    color: var(--color-texto);
+}
+
+@media (max-width: 768px) {
+    .ubicacion-section {
+        padding: 2rem 0;
+    }
+    
+    .mapa-container {
+        margin: 0 1rem;
+    }
+}
+
