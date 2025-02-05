@@ -25,7 +25,7 @@ include("conexion.php");
             </div>
         </section>
     
-        <nav class="navbar navbar-expand-lg sticky-top" id="menu-nav">
+        <nav class="navbar navbar-expand-lg navbar-light" id="menu-nav">
             <div class="container">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -88,10 +88,12 @@ include("conexion.php");
                         
                         while($producto = mysqli_fetch_assoc($result_productos)) {
                             echo '<div class="menu-item">';
+                            echo '<div class="producto-info">';
                             echo '<div class="producto-nombre">' . $producto['nombre'];
                             if(!empty($producto['descripcion'])) {
                                 echo '<div class="producto-descripcion">' . $producto['descripcion'] . '</div>';
                             }
+                            echo '</div>';
                             echo '</div>';
                             if($producto['precio'] > 0) {
                                 echo '<div class="producto-precio">( $ ' . number_format($producto['precio'], 0) . ' )</div>';
@@ -118,6 +120,35 @@ include("conexion.php");
             </div>
         </section>
     
+        <section class="instagram-grid">
+            <div class="container">
+                <h2 class="menu-title text-center mb-4">Seguinos en Instagram</h2>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="instagram-item">
+                            <a href="https://www.instagram.com/reel/DFf1SZKxEYP/" target="_blank">
+                                <img src="images/post1.jpg" alt="Kawhe Instagram Post" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="instagram-item">
+                            <a href="https://www.instagram.com/reel/DE_AeJuSHeP/" target="_blank">
+                                <img src="images/post2.jpg" alt="Kawhe Instagram Post" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="instagram-item">
+                            <a href="https://www.instagram.com/reel/DEiARQbRxQi/" target="_blank">
+                                <img src="images/post3.jpg" alt="Kawhe Instagram Post" class="img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="ubicacion-section">
             <div class="container">
                 <h2 class="menu-title text-center mb-4">Ubicación</h2>
@@ -125,27 +156,28 @@ include("conexion.php");
                     <div class="col-12">
                         <div class="mapa-container">
                             <iframe 
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.3531833979914!2d-58.443261!3d-34.595229599999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5f5809d48e5%3A0x498411a94d1b2e66!2sThames%20520%2C%20C1414%20Villa%20Crespo%2C%20Cdad.%20Autónoma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1738279433830!5m2!1ses-419!2sar" 
-                                width="100%" 
-                                height="450" 
-                                style="border:0;" 
-                                allowfullscreen="" 
-                                loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
-                        </div>
-                        <div class="direccion-container text-center mt-3">
-                            <p class="direccion-texto">Thames 520, Villa Crespo</p>
-                            <p class="horario-texto">Abierto todos los días de 8 a 20hs</p>
-                        </div>
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.3531833979914!2d-58.443261!3d-34.595229599999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5f5809d48e5%3A0x498411a94d1b2e66!2sThames%20520%2C%20C1414%20Villa%20Crespo%2C%20Cdad.%20Autónoma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1738279433830!5m2!1ses-419!2sar" 
+                            width="100%" 
+                            height="450" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    <div class="direccion-container text-center mt-3">
+                        <p class="direccion-texto">Thames 520, Villa Crespo</p>
+                        <p class="horario-texto">Abierto todos los días de 8 a 20hs</p>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
 
-    <footer class="footer">
-        <div class="container">
+<footer class="footer">
+        <div class="container text-center">
+            <p class="footer-title">¡Seguinos en nuestras redes sociales!</p>
             <div class="social-links">
                 <a href="https://www.instagram.com/cafekawhe/" target="_blank" title="Síguenos en Instagram">
                     <i class="fab fa-instagram"></i>
@@ -154,17 +186,34 @@ include("conexion.php");
                     <i class="fab fa-facebook"></i>
                 </a>
             </div>
+            <p class="copyright"> Copyright 2025 © Kawhe Café & Deli - Todos los derechos reservados.</p>
         </div>
     </footer>
-
+    
     <!-- Font Awesome para los íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const nav = document.getElementById('menu-nav');
+            const hero = document.querySelector('.hero-section');
+            
+            // Función para manejar el scroll
+            function handleScroll() {
+                if (window.scrollY >= hero.offsetHeight) {
+                    nav.classList.add('fixed-nav');
+                } else {
+                    nav.classList.remove('fixed-nav');
+                }
+            }
+            
+            // Escuchar el evento scroll
+            window.addEventListener('scroll', handleScroll);
+            
+            // Smooth scroll para los enlaces
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -172,7 +221,7 @@ include("conexion.php");
                     const targetElement = document.querySelector(targetId);
                     
                     if (targetElement) {
-                        const navHeight = document.querySelector('#menu-nav').offsetHeight;
+                        const navHeight = nav.offsetHeight;
                         const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navHeight;
                         
                         window.scrollTo({

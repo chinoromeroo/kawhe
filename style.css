@@ -17,6 +17,7 @@ main {
     background-repeat: repeat;
     background-color: var(--color-crema-principal);
     padding-bottom: 2rem;
+    padding-top: 90px;
 }
 
 .hero-section {
@@ -70,6 +71,21 @@ main {
     background-color: var(--color-verde-principal);
     box-shadow: 0 4px 6px var(--color-sombra);
     padding: 0.5rem 0;
+    width: 100%;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+#menu-nav.fixed-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+/* Ajustamos el main solo cuando el nav está fijo */
+.fixed-nav + main {
+    padding-top: 90px;
 }
 
 #menu-nav .nav-link {
@@ -94,7 +110,6 @@ main {
 }
 
 .menu-section {
-    padding: 4rem 0;
     font-family: 'Arial', sans-serif;
 }
 
@@ -121,6 +136,7 @@ main {
     align-items: flex-start;
     margin-bottom: 1rem;
     position: relative;
+    gap: 15px;
 }
 
 .menu-item::after {
@@ -132,11 +148,18 @@ main {
     border-bottom: 1px dotted var(--color-texto);
 }
 
-.producto-nombre {
+.producto-info {
+    flex: 1;
+    min-width: 0;
     padding-right: 10px;
     position: relative;
     z-index: 1;
+}
+
+.producto-nombre {
     padding-bottom: 3px;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .producto-descripcion {
@@ -146,34 +169,11 @@ main {
 }
 
 .producto-precio {
+    white-space: nowrap;
     padding-left: 10px;
     position: relative;
     z-index: 1;
     padding-bottom: 3px;
-}
-
-@media (max-width: 768px) {
-    .menu-section .col-md-6 {
-        margin-bottom: 2rem;
-    }
-}
-
-@media (max-width: 991.98px) {
-    #menu-nav .navbar-collapse {
-        background-color: var(--color-verde-principal);
-        padding: 1rem;
-        border-radius: 0 0 15px 15px;
-        box-shadow: 0 4px 6px var(--color-sombra);
-    }
-    
-    #menu-nav .nav-link {
-        text-align: center;
-        margin: 0.5rem 0;
-    }
-    
-    .menu-category {
-        margin: 1rem;
-    }
 }
 
 .ubicacion-section {
@@ -202,16 +202,6 @@ main {
     color: var(--color-texto);
 }
 
-@media (max-width: 768px) {
-    .ubicacion-section {
-        padding: 2rem 0;
-    }
-    
-    .mapa-container {
-        margin: 0 1rem;
-    }
-}
-
 .menu-section .row {
     margin: 0 -30px; 
 }
@@ -224,6 +214,14 @@ main {
     background-color: var(--color-verde-principal);
     padding: 2rem 0;
     box-shadow: 0 -4px 6px var(--color-sombra);
+    text-align: center;
+}
+
+.footer-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--color-texto);
+    margin-bottom: 1rem;
 }
 
 .social-links {
@@ -235,12 +233,103 @@ main {
 
 .social-links a {
     color: var(--color-texto);
-    font-size: 2rem;
+    font-size: 3rem;
     transition: all 0.3s ease;
 }
 
 .social-links a:hover {
     color: var(--color-verde-oscuro);
-    transform: translateY(-3px);
+    transform: translateY(-5px);
 }
 
+.copyright {
+    font-size: 0.9rem;
+    color: var(--color-texto);
+    margin-top: 1rem;
+    opacity: 0.8;
+}
+
+.instagram-grid {
+    padding: 4rem 0;
+}
+
+.instagram-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--color-sombra);
+    transition: transform 0.3s ease;
+}
+
+.instagram-item:hover {
+    transform: translateY(-5px);
+}
+
+.instagram-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.instagram-item a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 991.98px) {
+    #menu-nav .navbar-collapse {
+        background-color: var(--color-verde-principal);
+        padding: 1rem;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 6px var(--color-sombra);
+    }
+    
+    #menu-nav .nav-link {
+        text-align: center;
+        margin: 0.5rem 0;
+    }
+    
+    .menu-category {
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .ubicacion-section {
+        padding: 2rem 0;
+    }
+    
+    .mapa-container {
+        margin: 0 1rem;
+    }
+    
+    #menu-nav .nav-logo {
+        height: 50px;
+        width: auto;
+        margin: 0 1rem;
+    }
+    
+    .menu-section .col-md-6 {
+        margin-bottom: 2rem;
+    }
+    
+    .footer {
+        padding: 2rem 0;
+    }
+    
+    .social-links {
+        gap: 1.5rem;
+    }
+    
+    .social-links a {
+        font-size: 2rem;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .instagram-grid {
+        padding: 2rem 0;
+    }
+}
