@@ -12,7 +12,7 @@ include("conexion.php");
     <link rel="stylesheet" href="style.css">
     <title>Kawhe Café & Deli</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
@@ -119,7 +119,33 @@ include("conexion.php");
                 ?>
             </div>
         </section>
-    
+        
+        <section class="sobre-kawhe">
+            <div class="container">
+                <h2 class="menu-title text-center mb-4">Sobre nosotros</h2>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="sobre-kawhe-content">
+                            <p class="sobre-kawhe-destacado">Kahwe es café en Maorí</p>
+                            
+                            <div class="sobre-kawhe-texto">
+                                <p>La cultura Maorí se basa en la reciprocidad, el respeto, la hospitalidad y el equilibrio.</p>
+                                <p>Buscamos honrar sus valores en nuestra cafetería.</p>
+                                
+                                <p class="mb-4">Descubrí el espíritu de la hospitalidad Maorí en Kawhe ❤</p>
+                                
+                                <p>Nuestro cafe es un espacio pensado para compartir historias, sabores y tradiciones 🌿</p>
+                                
+                                <p>Por eso, nos inspiramos en los valores maoríes para que te sientas como en casa 🏠🤎</p>
+                                
+                                <p class="sobre-kawhe-cta">¡Vení a probar el mejor café!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="instagram-grid">
             <div class="container">
                 <h2 class="menu-title text-center mb-4">Seguinos en Instagram</h2>
@@ -148,91 +174,261 @@ include("conexion.php");
                 </div>
             </div>
         </section>
-
+        
+        <section class="galeria-section">
+            <div class="container">
+                <h2 class="menu-title text-center mb-4">Conocenos</h2>
+                
+                <!-- Carrusel Desktop (3 imágenes por slide) -->
+                <div id="galeriaCarousel" class="carousel slide d-none d-md-block">
+                    <!-- Indicadores -->
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#galeriaCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#galeriaCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#galeriaCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    
+                    <!-- Slides -->
+                    <div class="carousel-inner">
+                        <!-- Primer slide -->
+                        <div class="carousel-item active">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria1.jpg" alt="Kawhe Galería 1" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria2.jpg" alt="Kawhe Galería 2" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria3.jpg" alt="Kawhe Galería 3" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Segundo slide -->
+                        <div class="carousel-item">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria4.jpg" alt="Kawhe Galería 4" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria5.jpg" alt="Kawhe Galería 5" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria6.jpg" alt="Kawhe Galería 6" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tercer slide -->
+                        <div class="carousel-item">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria7.jpg" alt="Kawhe Galería 7" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria8.jpg" alt="Kawhe Galería 8" class="img-fluid">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="galeria-item">
+                                        <img src="images/galeria/galeria9.jpg" alt="Kawhe Galería 9" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controles -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#galeriaCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#galeriaCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+                
+                <!-- Carrusel Mobile (1 imagen por slide) -->
+                <div id="galeriaCarouselMobile" class="carousel slide d-md-none">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="5" aria-label="Slide 6"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="6" aria-label="Slide 7"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="7" aria-label="Slide 8"></button>
+                        <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="8" aria-label="Slide 9"></button>
+                    </div>
+                    
+                    <div class="carousel-inner">
+                        <!-- Imagen 1 -->
+                        <div class="carousel-item active">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria1.jpg" alt="Kawhe Galería 1" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 2 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria2.jpg" alt="Kawhe Galería 2" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 3 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria3.jpg" alt="Kawhe Galería 3" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 4 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria4.jpg" alt="Kawhe Galería 4" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 5 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria5.jpg" alt="Kawhe Galería 5" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 6 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria6.jpg" alt="Kawhe Galería 6" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 7 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria7.jpg" alt="Kawhe Galería 7" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 8 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria8.jpg" alt="Kawhe Galería 8" class="img-fluid">
+                            </div>
+                        </div>
+                        <!-- Imagen 9 -->
+                        <div class="carousel-item">
+                            <div class="galeria-item">
+                                <img src="images/galeria/galeria9.jpg" alt="Kawhe Galería 9" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="carousel-control-prev" type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
         <section class="ubicacion-section">
             <div class="container">
-                <h2 class="menu-title text-center mb-4">Ubicación</h2>
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <div class="mapa-container">
-                            <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.3531833979914!2d-58.443261!3d-34.595229599999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5f5809d48e5%3A0x498411a94d1b2e66!2sThames%20520%2C%20C1414%20Villa%20Crespo%2C%20Cdad.%20Autónoma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1738279433830!5m2!1ses-419!2sar" 
-                            width="100%" 
-                            height="450" 
-                            style="border:0;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
-                    </div>
-                    <div class="direccion-container text-center mt-3">
-                        <p class="direccion-texto">Thames 520, Villa Crespo</p>
-                        <p class="horario-texto">Abierto todos los días de 8 a 20hs</p>
+                <h2 class="menu-title text-center mb-4">Dónde estamos</h2>
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <div class="mapa-container">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.3531833979914!2d-58.443261!3d-34.595229599999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb5f5809d48e5%3A0x498411a94d1b2e66!2sThames%20520%2C%20C1414%20Villa%20Crespo%2C%20Cdad.%20Autónoma%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1738279433830!5m2!1ses-419!2sar" 
+                                    width="100%" 
+                                    height="450" 
+                                    style="border:0;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                        <div class="direccion-container text-center mt-3">
+                            <p class="direccion-texto">Thames 520, Villa Crespo</p>
+                            <p class="horario-texto">Abierto todos los días de 8 a 20hs</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</main>
+        </section>
+    </main>
 
-<footer class="footer">
-        <div class="container text-center">
-            <p class="footer-title">¡Seguinos en nuestras redes sociales!</p>
-            <div class="social-links">
-                <a href="https://www.instagram.com/cafekawhe/" target="_blank" title="Síguenos en Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://www.facebook.com/profile.php?id=61569199813804" target="_blank" title="Síguenos en Facebook">
-                    <i class="fab fa-facebook"></i>
-                </a>
+    <footer class="footer">
+            <div class="container text-center">
+                <p class="footer-title">¡Seguinos en nuestras redes sociales!</p>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/cafekawhe/" target="_blank" title="Síguenos en Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61569199813804" target="_blank" title="Síguenos en Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                </div>
+                <p class="copyright"> Copyright 2025 © Kawhe Café & Deli - Todos los derechos reservados.</p>
             </div>
-            <p class="copyright"> Copyright 2025 © Kawhe Café & Deli - Todos los derechos reservados.</p>
-        </div>
-    </footer>
-    
-    <!-- Font Awesome para los íconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const nav = document.getElementById('menu-nav');
-            const hero = document.querySelector('.hero-section');
-            
-            // Función para manejar el scroll
-            function handleScroll() {
-                if (window.scrollY >= hero.offsetHeight) {
-                    nav.classList.add('fixed-nav');
-                } else {
-                    nav.classList.remove('fixed-nav');
-                }
-            }
-            
-            // Escuchar el evento scroll
-            window.addEventListener('scroll', handleScroll);
-            
-            // Smooth scroll para los enlaces
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        const navHeight = nav.offsetHeight;
-                        const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navHeight;
-                        
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
+        </footer>
+        
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const nav = document.getElementById('menu-nav');
+                const hero = document.querySelector('.hero-section');
+                
+                // Función para manejar el scroll
+                function handleScroll() {
+                    if (window.scrollY >= hero.offsetHeight) {
+                        nav.classList.add('fixed-nav');
+                    } else {
+                        nav.classList.remove('fixed-nav');
                     }
+                }
+                
+                // Escuchar el evento scroll
+                window.addEventListener('scroll', handleScroll);
+                
+                // Smooth scroll para los enlaces
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        
+                        if (targetElement) {
+                            const navHeight = nav.offsetHeight;
+                            const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navHeight;
+                            
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
                 });
             });
-        });
-    </script>
+        </script>
 
 </body>
 </html>

@@ -278,6 +278,87 @@ main {
     height: 100%;
 }
 
+.galeria-section {
+    padding: 4rem 0;
+}
+
+.galeria-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+
+.galeria-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#galeriaCarousel {
+    padding-bottom: 3rem;
+}
+
+#galeriaCarousel .carousel-indicators {
+    bottom: 0;
+}
+
+#galeriaCarousel .carousel-indicators button {
+    background-color: var(--color-verde-principal);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+
+#galeriaCarousel .carousel-control-prev,
+#galeriaCarousel .carousel-control-next {
+    width: 5%;
+    color: var(--color-verde-principal);
+}
+
+#galeriaCarousel .carousel-control-prev-icon,
+#galeriaCarousel .carousel-control-next-icon {
+    filter: invert(1) brightness(70%);
+}
+
+
+.sobre-kawhe {
+    padding: 4rem 0;
+}
+
+.sobre-kawhe-content {
+    text-align: center;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+
+.sobre-kawhe-destacado {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-texto);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-verde-principal);
+}
+
+.sobre-kawhe-texto p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    color: var(--color-texto);
+}
+
+.sobre-kawhe-cta {
+    font-size: 1.3rem !important;
+    font-weight: 600;
+    color: var(--color-verde-oscuro) !important;
+    margin-top: 2rem;
+}
+
 @media (max-width: 991.98px) {
     #menu-nav .navbar-collapse {
         background-color: var(--color-verde-principal);
@@ -331,5 +412,29 @@ main {
     
     .instagram-grid {
         padding: 2rem 0;
+    }
+    
+    .galeria-section {
+        padding: 2rem 0;
+    }
+    
+    .galeria-item {
+        margin-bottom: 1rem;
+    }
+    
+    .sobre-kawhe {
+        padding: 2rem 0;
+    }
+    
+    .sobre-kawhe-content {
+        padding: 1.5rem;
+    }
+    
+    .sobre-kawhe-destacado {
+        font-size: 1.3rem;
+    }
+    
+    .sobre-kawhe-texto p {
+        font-size: 1rem;
     }
 }
