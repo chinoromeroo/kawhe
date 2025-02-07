@@ -34,7 +34,6 @@ include("conexion.php");
                 <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                     <ul class="navbar-nav">
                         <?php
-                        // Obtener secciones para el nav
                         $query_nav = "SELECT * FROM secciones WHERE activo = 1";
                         $result_nav = mysqli_query($conexion, $query_nav);
                         
@@ -96,7 +95,7 @@ include("conexion.php");
                             echo '</div>';
                             echo '</div>';
                             if($producto['precio'] > 0) {
-                                echo '<div class="producto-precio">( $ ' . number_format($producto['precio'], 0) . ' )</div>';
+                                echo '<div class="producto-precio"> $' . number_format($producto['precio'], 0) . ' </div>';
                             }
                             echo '</div>';
                         }
@@ -179,7 +178,7 @@ include("conexion.php");
             <div class="container">
                 <h2 class="menu-title text-center mb-4">Conocenos</h2>
                 
-                <!-- Carrusel Desktop (3 imágenes por slide) -->
+                <!-- Carrusel Desktop -->
                 <div id="galeriaCarousel" class="carousel slide d-none d-md-block">
                     <!-- Indicadores -->
                     <div class="carousel-indicators">
@@ -190,7 +189,6 @@ include("conexion.php");
                     
                     <!-- Slides -->
                     <div class="carousel-inner">
-                        <!-- Primer slide -->
                         <div class="carousel-item active">
                             <div class="row g-4">
                                 <div class="col-md-4">
@@ -211,7 +209,6 @@ include("conexion.php");
                             </div>
                         </div>
                         
-                        <!-- Segundo slide -->
                         <div class="carousel-item">
                             <div class="row g-4">
                                 <div class="col-md-4">
@@ -232,7 +229,6 @@ include("conexion.php");
                             </div>
                         </div>
                         
-                        <!-- Tercer slide -->
                         <div class="carousel-item">
                             <div class="row g-4">
                                 <div class="col-md-4">
@@ -265,7 +261,7 @@ include("conexion.php");
                     </button>
                 </div>
                 
-                <!-- Carrusel Mobile (1 imagen por slide) -->
+                <!-- Carrusel Mobile -->
                 <div id="galeriaCarouselMobile" class="carousel slide d-md-none">
                     <div class="carousel-indicators">
                         <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -279,56 +275,48 @@ include("conexion.php");
                         <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="8" aria-label="Slide 9"></button>
                     </div>
                     
+                    <!-- Imagenes -->
                     <div class="carousel-inner">
-                        <!-- Imagen 1 -->
                         <div class="carousel-item active">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria1.jpg" alt="Kawhe Galería 1" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 2 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria2.jpg" alt="Kawhe Galería 2" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 3 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria3.jpg" alt="Kawhe Galería 3" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 4 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria4.jpg" alt="Kawhe Galería 4" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 5 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria5.jpg" alt="Kawhe Galería 5" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 6 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria6.jpg" alt="Kawhe Galería 6" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 7 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria7.jpg" alt="Kawhe Galería 7" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 8 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria8.jpg" alt="Kawhe Galería 8" class="img-fluid">
                             </div>
                         </div>
-                        <!-- Imagen 9 -->
                         <div class="carousel-item">
                             <div class="galeria-item">
                                 <img src="images/galeria/galeria9.jpg" alt="Kawhe Galería 9" class="img-fluid">
@@ -429,6 +417,5 @@ include("conexion.php");
                 });
             });
         </script>
-
 </body>
 </html>

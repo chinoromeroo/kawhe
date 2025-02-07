@@ -83,7 +83,6 @@ main {
     right: 0;
 }
 
-/* Ajustamos el main solo cuando el nav está fijo */
 .fixed-nav + main {
     padding-top: 90px;
 }
@@ -323,7 +322,6 @@ main {
     filter: invert(1) brightness(70%);
 }
 
-
 .sobre-kawhe {
     padding: 4rem 0;
 }
@@ -437,4 +435,85 @@ main {
     .sobre-kawhe-texto p {
         font-size: 1rem;
     }
+}
+
+/* Estilos para el Panel de Administración */
+.editable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.editable:hover {
+    background-color: var(--color-verde-principal);
+    transform: translateY(-2px);
+}
+
+
+/* Estilos para el Modal */
+.modal-content {
+    background-color: var(--color-crema-principal);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+
+.modal-header {
+    background-color: var(--color-verde-principal);
+    color: var(--color-texto);
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+/* Estilos para el Login */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+
+.login-logo {
+    max-width: 200px;
+    margin: 0 auto 2rem;
+    display: block;
+}
+
+.login-title {
+    color: var(--color-texto);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: var(--color-verde-principal);
+    border: none;
+    color: var(--color-texto);
+    padding: 0.8rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-verde-oscuro);
+    transform: translateY(-2px);
+}
+
+.form-control {
+    border: 2px solid var(--color-verde-principal);
+    border-radius: 8px;
+    padding: 0.8rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(194,206,184,0.25);
+    border-color: var(--color-verde-oscuro);
 }
