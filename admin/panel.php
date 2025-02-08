@@ -29,9 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                         case 'productos':
                             $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
-                            $query = "UPDATE productos SET nombre = ?, precio = ? WHERE id_producto = ?";
-                            $types = "sdi";
-                            $params = array($nombre, $precio, $id);
+                            $descripcion = isset($_POST['descripcion']) ? mysqli_real_escape_string($conexion, $_POST['descripcion']) : null;
+                            $query = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ? WHERE id_producto = ?";
+                            $types = "ssdi";
+                            $params = array($nombre, $descripcion, $precio, $id);
                             break;
                             
                         default:
@@ -60,7 +61,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Content-Type: application/json');
                 echo json_encode($response);
                 exit;
-            }
+            case 'add_item':
+                try {
+                    $table = mysqli_real_escape_string($conexion, $_POST['table']);
+                    $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
+                    
+                    switch ($table) {
+                        case 'secciones':
+                            $query = "INSERT INTO secciones (nombre, activo) VALUES (?, 1)";
+                            $types = "s";
+                            $params = array($nombre);
+                            break;
+                            
+                        case 'categorias':
+                            $id_seccion = (int)$_POST['id_seccion'];
+                            $query = "INSERT INTO categorias (nombre, id_seccion, activo) VALUES (?, ?, 1)";
+                            $types = "si";
+                            $params = array($nombre, $id_seccion);
+                            break;
+                            
+                        case 'productos':
+                            $id_categoria = (int)$_POST['id_categoria'];
+                            $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
+                            $descripcion = isset($_POST['descripcion']) ? mysqli_real_escape_string($conexion, $_POST['descripcion']) : null;
+                            $query = "INSERT INTO productos (nombre, descripcion, precio, id_categoria, activo) VALUES (?, ?, ?, ?, 1)";
+                            $types = "ssdi";
+                            $params = array($nombre, $descripcion, $precio, $id_categoria);
+                            break;
+                            
+                        default:
+                            throw new Exception('Tipo de tabla no válido: ' . $table);
+                    }
+                    
+                    $stmt = mysqli_prepare($conexion, $query);
+                    if ($stmt === false) {
+                        throw new Exception('Error en la preparación de la consulta: ' . mysqli_error($conexion));
+                    }
+                    
+                    mysqli_stmt_bind_param($stmt, $types, ...$params);
+                    
+                    if (mysqli_stmt_execute($stmt)) {
+                        $response = ['success' => true];
+                    } else {
+                        throw new Exception('Error al ejecutar la consulta: ' . mysqli_stmt_error($stmt));
+                    }
+                    
+                    mysqli_stmt_close($stmt);
+                    
+                } catch (Exception $e) {
+                    $response = ['success' => false, 'error' => $e->getMessage()];
+                }
+                
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
+        }
     }
 }
 ?>
@@ -97,20 +152,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg nav-panel">
         <div class="container">
-            <a class="navbar-brand" href="#">Kawhe Admin</a>
+            <img src="../images/LOGOTIPO-KAWHE.png" alt="Logo Kawhe" class="nav-logo">
             <div>
                 <a href="logout.php" class="btn btn-danger">Cerrar Sesión</a>
             </div>
+
         </div>
     </nav>
     
     <main>
         <section class="menu-section">
             <div class="container">
-                <h1 class="text-center mb-4">Gestión del Menú</h1>
-                <p class="text-center mb-4">Haz clic en cualquier elemento para editarlo</p>
+                <h1 class="text-center panel-title">Gestión del Menú</h1>
+                <p class="text-center mb-4 panel-subtitle">Haz clic en cualquier elemento para editarlo</p>
+                
+                <!-- Agregar botones de acción -->
+                <div class="d-flex justify-content-center gap-3 mb-4">
+                    <button class="btn btn-success" onclick="showAddModal('seccion')">
+                        <i class="fas fa-plus"></i> Agregar Sección
+                    </button>
+                    <button class="btn btn-success" onclick="showAddModal('categoria')">
+                        <i class="fas fa-plus"></i> Agregar Categoría
+                    </button>
+                    <button class="btn btn-success" onclick="showAddModal('producto')">
+                        <i class="fas fa-plus"></i> Agregar Producto
+                    </button>
+                </div>
                 
                 <?php
                 // Obtener secciones
@@ -155,6 +224,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                       data-id="' . $producto['id_producto'] . '">';
                             echo '<div class="producto-info">';
                             echo '<div class="producto-nombre">' . $producto['nombre'];
+                            if(!empty($producto['descripcion'])) {
+                                echo '<div class="producto-descripcion">' . $producto['descripcion'] . '</div>';
+                            }
                             echo '</div>';
                             echo '</div>';
                             if($producto['precio'] > 0) {
@@ -183,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </section>
     </main>
 
-    <!-- Modal para edición -->
+    <!-- Modal para agregar/editar -->
     <div class="modal fade" id="editModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -203,24 +275,129 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.addEventListener('DOMContentLoaded', function() {
             const editModal = new bootstrap.Modal(document.getElementById('editModal'));
             
+            // Función para mostrar el modal de agregar
+            window.showAddModal = async function(type) {
+                const modalTitle = document.querySelector('.modal-title');
+                modalTitle.textContent = `Agregar ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                
+                // Obtener las secciones o categorías según sea necesario
+                let selectOptions = '';
+                if (type === 'categoria' || type === 'producto') {
+                    const response = await fetch(`get_options.php?type=${type}`);
+                    const data = await response.json();
+                    selectOptions = data.map(item => 
+                        `<option value="${item.id}">${item.nombre}</option>`
+                    ).join('');
+                }
+                
+                const modalBody = document.querySelector('.modal-body');
+                modalBody.innerHTML = `
+                    <form id="addForm">
+                        <input type="hidden" name="action" value="add_item">
+                        <input type="hidden" name="table" value="${type === 'seccion' ? 'secciones' : type === 'categoria' ? 'categorias' : 'productos'}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        
+                        ${type === 'categoria' ? `
+                            <div class="mb-3">
+                                <label class="form-label">Sección</label>
+                                <select class="form-control" name="id_seccion" required>
+                                    <option value="">Seleccionar sección</option>
+                                    ${selectOptions}
+                                </select>
+                            </div>
+                        ` : ''}
+                        
+                        ${type === 'producto' ? `
+                            <div class="mb-3">
+                                <label class="form-label">Categoría</label>
+                                <select class="form-control" name="id_categoria" required>
+                                    <option value="">Seleccionar categoría</option>
+                                    ${selectOptions}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Descripción (opcional)</label>
+                                <textarea class="form-control" name="descripcion" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Precio</label>
+                                <input type="number" step="1" class="form-control" name="precio" value="0">
+                            </div>
+                        ` : ''}
+                        
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                `;
+                
+                const form = document.getElementById('addForm');
+                form.addEventListener('submit', handleSubmit);
+                form.addEventListener('keypress', handleEnterKey);
+                
+                editModal.show();
+            };
+            
+            // Función para manejar la tecla Enter
+            function handleEnterKey(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.dispatchEvent(new Event('submit'));
+                }
+            }
+            
+            // Función para manejar el envío del formulario
+            async function handleSubmit(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                try {
+                    const response = await fetch('panel.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar los cambios: ' + (result.error || 'Error desconocido'));
+                        console.error('Error details:', result);
+                    }
+                } catch (error) {
+                    console.error('Error completo:', error);
+                    alert('Error al procesar la solicitud: ' + error.message);
+                }
+            }
+            
             document.querySelectorAll('.editable').forEach(item => {
                 item.addEventListener('click', function() {
                     const type = this.dataset.type;
                     const id = this.dataset.id;
-                    let currentName, currentPrice;
+                    let currentName, currentPrice, currentDescription;
                     
+                    // Para productos, obtener nombre, precio y descripción por separado
                     if (type === 'producto') {
-                        currentName = this.querySelector('.producto-nombre').textContent.trim();
+                        // Obtener solo el texto del nombre, excluyendo la descripción
+                        currentName = this.querySelector('.producto-nombre').childNodes[0].textContent.trim();
                         const precioElement = this.querySelector('.producto-precio');
                         currentPrice = precioElement ? 
                             precioElement.textContent
                                 .replace('$', '')
-                                .replace(/,/g, '') 
+                                .replace(/,/g, '')
                                 .replace(/\s/g, '')
                                 .trim() : 
                             '0';
+                        // Obtener la descripción de forma separada
+                        const descripcionElement = this.querySelector('.producto-descripcion');
+                        currentDescription = descripcionElement ? descripcionElement.textContent.trim() : '';
                     } else {
-                        // Para secciones y categorías, usar el texto directamente
                         currentName = this.textContent.trim();
                     }
                     
@@ -238,6 +415,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             ${type === 'producto' ? `
                                 <div class="mb-3">
+                                    <label class="form-label">Descripción (opcional)</label>
+                                    <textarea class="form-control" name="descripcion" rows="2">${currentDescription}</textarea>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Precio</label>
                                     <input type="number" step="1" class="form-control" name="precio" value="${currentPrice}">
                                 </div>
@@ -252,7 +433,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     editModal.show();
                     
-                    document.getElementById('editForm').addEventListener('submit', async function(e) {
+                    // Agregar evento para el enter
+                    const form = document.getElementById('editForm');
+                    form.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault(); // Prevenir el salto de línea en textareas
+                            form.dispatchEvent(new Event('submit'));
+                        }
+                    });
+                    
+                    form.addEventListener('submit', async function(e) {
                         e.preventDefault();
                         
                         const formData = new FormData(this);

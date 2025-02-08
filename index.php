@@ -95,7 +95,7 @@ include("conexion.php");
                             echo '</div>';
                             echo '</div>';
                             if($producto['precio'] > 0) {
-                                echo '<div class="producto-precio"> $' . number_format($producto['precio'], 0) . ' </div>';
+                                echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
                             }
                             echo '</div>';
                         }
