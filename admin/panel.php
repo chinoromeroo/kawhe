@@ -115,6 +115,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Content-Type: application/json');
                 echo json_encode($response);
                 exit;
+            case 'delete_item':
+                try {
+                    $table = mysqli_real_escape_string($conexion, $_POST['table']);
+                    $id = (int)$_POST['id'];
+                    
+                    // Determinar el nombre de la columna ID según la tabla
+                    $id_column = '';
+                    switch ($table) {
+                        case 'secciones':
+                            $id_column = 'id_seccion';
+                            // Verificar si hay categorías asociadas
+                            $check_query = "SELECT COUNT(*) as count FROM categorias WHERE id_seccion = ? AND activo = 1";
+                            break;
+                        case 'categorias':
+                            $id_column = 'id_categoria';
+                            // Verificar si hay productos asociados
+                            $check_query = "SELECT COUNT(*) as count FROM productos WHERE id_categoria = ? AND activo = 1";
+                            break;
+                        case 'productos':
+                            $id_column = 'id_producto';
+                            $check_query = null;
+                            break;
+                        default:
+                            throw new Exception('Tipo de tabla no válido');
+                    }
+                    
+                    // Si hay check_query, verificar dependencias
+                    if ($check_query) {
+                        $check_stmt = mysqli_prepare($conexion, $check_query);
+                        mysqli_stmt_bind_param($check_stmt, "i", $id);
+                        mysqli_stmt_execute($check_stmt);
+                        $check_result = mysqli_stmt_get_result($check_stmt);
+                        $row = mysqli_fetch_assoc($check_result);
+                        
+                        if ($row['count'] > 0) {
+                            throw new Exception('No se puede eliminar porque tiene elementos asociados. Elimina primero los elementos dependientes.');
+                        }
+                    }
+                    
+                    // Realizar eliminación lógica (actualizar campo activo)
+                    $query = "UPDATE $table SET activo = 0 WHERE $id_column = ?";
+                    $stmt = mysqli_prepare($conexion, $query);
+                    
+                    if ($stmt === false) {
+                        throw new Exception('Error en la preparación de la consulta');
+                    }
+                    
+                    mysqli_stmt_bind_param($stmt, "i", $id);
+                    
+                    if (mysqli_stmt_execute($stmt)) {
+                        $response = ['success' => true];
+                    } else {
+                        throw new Exception('Error al ejecutar la consulta: ' . mysqli_stmt_error($stmt));
+                    }
+                    
+                    mysqli_stmt_close($stmt);
+                    
+                } catch (Exception $e) {
+                    $response = ['success' => false, 'error' => $e->getMessage()];
+                }
+                
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                exit;
         }
     }
 }
@@ -155,10 +219,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <nav class="navbar navbar-expand-lg nav-panel">
         <div class="container">
             <img src="../images/LOGOTIPO-KAWHE.png" alt="Logo Kawhe" class="nav-logo">
-            <div>
-                <a href="logout.php" class="btn btn-danger">Cerrar Sesión</a>
+            
+            <!-- Botón hamburguesa -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPanel">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Contenedor de botones -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarPanel">
+                <div class="d-flex gap-2">
+                    <a href="../index.php" class="btn btn-volver">Volver al Menú</a>
+                    <a href="logout.php" class="btn btn-danger">Cerrar Sesión</a>
+                </div>
             </div>
-
         </div>
     </nav>
     
@@ -415,7 +488,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             ${type === 'producto' ? `
                                 <div class="mb-3">
-                                    <label class="form-label">Descripción (opcional)</label>
+                                    <label class="form-label">Descripción</label>
                                     <textarea class="form-control" name="descripcion" rows="2">${currentDescription}</textarea>
                                 </div>
                                 <div class="mb-3">
@@ -424,9 +497,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             ` : ''}
                             
-                            <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button" class="btn btn-danger" onclick="deleteItem('${type}', ${id})">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
                             </div>
                         </form>
                     `;
@@ -467,6 +545,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     });
                 });
             });
+
+            // Agregar la función de eliminar
+            window.deleteItem = async function(type, id) {
+                if (!confirm('¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.')) {
+                    return;
+                }
+
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'delete_item');
+                    formData.append('table', type === 'seccion' ? 'secciones' : type === 'categoria' ? 'categorias' : 'productos');
+                    formData.append('id', id);
+
+                    const response = await fetch('panel.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al eliminar: ' + (result.error || 'Error desconocido'));
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al procesar la solicitud: ' + error.message);
+                }
+            };
         });
     </script>
 </body>
