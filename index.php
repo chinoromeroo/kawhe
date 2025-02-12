@@ -53,7 +53,7 @@ include("conexion.php");
         <section class="menu-section">
             <div class="container">
                 <?php
-                // Obtener secciones
+                // Secciones
                 $query_secciones = "SELECT * FROM secciones WHERE activo = 1";
                 $result_secciones = mysqli_query($conexion, $query_secciones);
                 
@@ -69,7 +69,7 @@ include("conexion.php");
                         echo '<div class="row">';
                     }
                     
-                    // Obtener categorías de la sección
+                    // Categorías
                     $query_categorias = "SELECT * FROM categorias WHERE id_seccion = {$seccion['id_seccion']} AND activo = 1";
                     $result_categorias = mysqli_query($conexion, $query_categorias);
                     
@@ -81,7 +81,7 @@ include("conexion.php");
                         echo '<div class="menu-category mb-4">';
                         echo '<h3 class="categoria-title mb-3">' . $categoria['nombre'] . '</h3>';
                         
-                        // Obtener productos de la categoría
+                        // Productos
                         $query_productos = "SELECT * FROM productos WHERE id_categoria = {$categoria['id_categoria']} AND activo = 1";
                         $result_productos = mysqli_query($conexion, $query_productos);
                         
@@ -178,7 +178,7 @@ include("conexion.php");
             <div class="container">
                 <h2 class="menu-title text-center mb-4">Conocenos</h2>
                 
-                <!-- Carrusel Desktop -->
+                <!--------------------------- Carrusel Desktop ------------------------->
                 <div id="galeriaCarousel" class="carousel slide d-none d-md-block">
                     <!-- Indicadores -->
                     <div class="carousel-indicators">
@@ -261,7 +261,8 @@ include("conexion.php");
                     </button>
                 </div>
                 
-                <!-- Carrusel Mobile -->
+
+                <!------------------------------ Carrusel Mobile ------------------------->
                 <div id="galeriaCarouselMobile" class="carousel slide d-md-none">
                     <div class="carousel-indicators">
                         <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -275,7 +276,7 @@ include("conexion.php");
                         <button type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide-to="8" aria-label="Slide 9"></button>
                     </div>
                     
-                    <!-- Imagenes -->
+                    <!-- Slides -->
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <div class="galeria-item">
@@ -324,6 +325,7 @@ include("conexion.php");
                         </div>
                     </div>
                     
+                    <!-- Controles -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#galeriaCarouselMobile" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Anterior</span>
@@ -385,7 +387,7 @@ include("conexion.php");
                 const nav = document.getElementById('menu-nav');
                 const hero = document.querySelector('.hero-section');
                 
-                // Función para manejar el scroll
+                // Scroll
                 function handleScroll() {
                     if (window.scrollY >= hero.offsetHeight) {
                         nav.classList.add('fixed-nav');
@@ -394,10 +396,9 @@ include("conexion.php");
                     }
                 }
                 
-                // Escuchar el evento scroll
                 window.addEventListener('scroll', handleScroll);
                 
-                // Smooth scroll para los enlaces
+                // Smooth scroll
                 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     anchor.addEventListener('click', function (e) {
                         e.preventDefault();

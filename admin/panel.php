@@ -2,18 +2,18 @@
 require_once('check_auth.php');
 require_once('../conexion.php');
 
-// Procesar actualizaciones si hay POST
+// Procesar actualizaciones
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'update_item':
                 try {
-                    // Validar los datos recibidos
+                    // Validar datos
                     $table = mysqli_real_escape_string($conexion, $_POST['table']);
                     $id = (int)$_POST['id'];
                     $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
                     
-                    // Construir la consulta según el tipo de tabla
+                    // Consulta según el tipo de tabla
                     switch ($table) {
                         case 'secciones':
                             $query = "UPDATE secciones SET nombre = ? WHERE id_seccion = ?";
@@ -120,17 +120,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $table = mysqli_real_escape_string($conexion, $_POST['table']);
                     $id = (int)$_POST['id'];
                     
-                    // Determinar el nombre de la columna ID según la tabla
+                    // Columna ID
                     $id_column = '';
                     switch ($table) {
                         case 'secciones':
                             $id_column = 'id_seccion';
-                            // Verificar si hay categorías asociadas
+                            // Verificar categorías
                             $check_query = "SELECT COUNT(*) as count FROM categorias WHERE id_seccion = ? AND activo = 1";
                             break;
                         case 'categorias':
                             $id_column = 'id_categoria';
-                            // Verificar si hay productos asociados
+                            // Verificar productos
                             $check_query = "SELECT COUNT(*) as count FROM productos WHERE id_categoria = ? AND activo = 1";
                             break;
                         case 'productos':
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             throw new Exception('Tipo de tabla no válido');
                     }
                     
-                    // Si hay check_query, verificar dependencias
+                    // Verificar dependencias
                     if ($check_query) {
                         $check_stmt = mysqli_prepare($conexion, $check_query);
                         mysqli_stmt_bind_param($check_stmt, "i", $id);
@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     
-                    // Realizar eliminación lógica (actualizar campo activo)
+                    // Eliminación lógica
                     $query = "UPDATE $table SET activo = 0 WHERE $id_column = ?";
                     $stmt = mysqli_prepare($conexion, $query);
                     
@@ -192,28 +192,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Panel Administrativo - Kawhe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
-    <style>
-        .editable:hover {
-            background-color: rgba(194,206,184,0.2);
-            cursor: pointer;
-        }
-        
-        .menu-item.editing {
-            background-color: rgba(194,206,184,0.3);
-            padding: 10px;
-            border-radius: 5px;
-        }
-        
-        .edit-form {
-            margin-top: 10px;
-        }
-        
-        .edit-buttons {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg nav-panel">
@@ -225,7 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <!-- Contenedor de botones -->
             <div class="collapse navbar-collapse justify-content-end" id="navbarPanel">
                 <div class="d-flex gap-2">
                     <a href="../index.php" class="btn btn-volver">Volver al Menú</a>
@@ -241,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h1 class="text-center panel-title">Gestión del Menú</h1>
                 <p class="text-center mb-4 panel-subtitle">Haz clic en cualquier elemento para editarlo</p>
                 
-                <!-- Agregar botones de acción -->
+                <!-- Botones de acción -->
                 <div class="d-flex justify-content-center gap-3 mb-4">
                     <button class="btn btn-success" onclick="showAddModal('seccion')">
                         <i class="fas fa-plus"></i> Agregar Sección
@@ -337,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- El formulario se insertará aquí dinámicamente -->
+                    <!-- Formulario -->
                 </div>
             </div>
         </div>
@@ -348,12 +325,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         document.addEventListener('DOMContentLoaded', function() {
             const editModal = new bootstrap.Modal(document.getElementById('editModal'));
             
-            // Función para mostrar el modal de agregar
+            // Mostrar el modal de agregar
             window.showAddModal = async function(type) {
                 const modalTitle = document.querySelector('.modal-title');
                 modalTitle.textContent = `Agregar ${type.charAt(0).toUpperCase() + type.slice(1)}`;
                 
-                // Obtener las secciones o categorías según sea necesario
+                // Obtener secciones o categorías 
                 let selectOptions = '';
                 if (type === 'categoria' || type === 'producto') {
                     const response = await fetch(`get_options.php?type=${type}`);
@@ -416,7 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 editModal.show();
             };
             
-            // Función para manejar la tecla Enter
+            // Manejo tecla Enter
             function handleEnterKey(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -424,7 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
-            // Función para manejar el envío del formulario
+            // Manejar envío del formulario
             async function handleSubmit(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
@@ -455,9 +432,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     const id = this.dataset.id;
                     let currentName, currentPrice, currentDescription;
                     
-                    // Para productos, obtener nombre, precio y descripción por separado
                     if (type === 'producto') {
-                        // Obtener solo el texto del nombre, excluyendo la descripción
+                        // Obtener nombre, precio y descripción
                         currentName = this.querySelector('.producto-nombre').childNodes[0].textContent.trim();
                         const precioElement = this.querySelector('.producto-precio');
                         currentPrice = precioElement ? 
@@ -467,7 +443,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 .replace(/\s/g, '')
                                 .trim() : 
                             '0';
-                        // Obtener la descripción de forma separada
                         const descripcionElement = this.querySelector('.producto-descripcion');
                         currentDescription = descripcionElement ? descripcionElement.textContent.trim() : '';
                     } else {
@@ -511,11 +486,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     editModal.show();
                     
-                    // Agregar evento para el enter
+                    // Enter
                     const form = document.getElementById('editForm');
                     form.addEventListener('keypress', function(e) {
                         if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault(); // Prevenir el salto de línea en textareas
+                            e.preventDefault(); 
                             form.dispatchEvent(new Event('submit'));
                         }
                     });
@@ -546,7 +521,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             });
 
-            // Agregar la función de eliminar
+            // Función de eliminar
             window.deleteItem = async function(type, id) {
                 if (!confirm('¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.')) {
                     return;

@@ -2,13 +2,13 @@
 session_start();
 require_once('../conexion.php');
 
-// Si ya está logueado, redirigir al panel
+// Redirigir si ya está logueado
 if(isset($_SESSION['admin_logged_in'])) {
     header('Location: panel.php');
     exit;
 }
 
-// Procesar el formulario de login
+// Formulario de login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];

@@ -20,6 +20,10 @@ main {
     padding-top: 90px;
 }
 
+
+
+/* ------------------------------INDEX------------------------------ */
+/* ---------Header/Nav--------- */
 .hero-section {
     position: relative;
     height: 100vh;
@@ -31,7 +35,6 @@ main {
     text-align: center;
     padding: 2rem;
 }
-
 .hero-background {
     position: absolute;
     top: 0;
@@ -44,7 +47,6 @@ main {
     filter: blur(4px) brightness(0.7);
     z-index: 1;
 }
-
 .hero-content {
     position: relative;
     z-index: 2;
@@ -53,20 +55,17 @@ main {
     border-radius: 20px;
     backdrop-filter: blur(5px);
 }
-
 .logo {
     max-width: 300px;
     margin-bottom: 2rem;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
 }
-
 .hero-text {
     color: white;
     margin-bottom: 1rem;
     font-size: 1.5rem;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
-
 #menu-nav, .nav-panel {
     background-color: var(--color-verde-principal);
     box-shadow: 0 4px 6px var(--color-sombra);
@@ -75,18 +74,15 @@ main {
     z-index: 1000;
     transition: all 0.3s ease;
 }
-
 #menu-nav.fixed-nav {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
 }
-
 .fixed-nav + main {
     padding-top: 90px;
 }
-
 #menu-nav .nav-link {
     color: var(--color-texto);
     font-weight: 600;
@@ -95,54 +91,36 @@ main {
     border-radius: 25px;
     margin: 0 0.3rem;
 }
-
 #menu-nav .nav-link:hover {
     background-color: var(--color-verde-oscuro);
     color: white;
     transform: translateY(-2px);
 }
-
 #menu-nav .nav-logo, .nav-panel .nav-logo {
     height: 70px;
     width: auto;
     margin: 0 1rem;
 }
 
-.panel-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color:#3f6322;
-}
 
-.panel-subtitle {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 2rem;
-    color: #5d8a38;
-}
-
+/* ---------Menu--------- */
 .menu-section {
     font-family: 'Arial', sans-serif;
 }
-
 .menu-title {
     font-size: 2rem;
     font-weight: bold;
     text-transform: uppercase;
     margin-bottom: 2rem;
 }
-
 .menu-category {
     margin-bottom: 3rem;
 }
-
 .categoria-title {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1.5rem;
 }
-
 .menu-item {
     display: flex;
     justify-content: space-between;
@@ -151,7 +129,6 @@ main {
     position: relative;
     gap: 15px;
 }
-
 .menu-item::after {
     content: "";
     position: absolute;
@@ -160,7 +137,6 @@ main {
     bottom: 3px;
     border-bottom: 1px dotted var(--color-texto);
 }
-
 .producto-info {
     flex: 1;
     min-width: 0;
@@ -168,19 +144,16 @@ main {
     position: relative;
     z-index: 1;
 }
-
 .producto-nombre {
     padding-bottom: 3px;
     word-wrap: break-word;
     hyphens: auto;
 }
-
 .producto-descripcion {
     font-size: 0.9rem;
     color: #666;
     font-style: italic;
 }
-
 .producto-precio {
     white-space: nowrap;
     padding-left: 10px;
@@ -188,154 +161,15 @@ main {
     z-index: 1;
     padding-bottom: 3px;
 }
-
-.ubicacion-section {
-    padding: 4rem 0;
-}
-
-.mapa-container {
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px var(--color-sombra);
-}
-
-.direccion-container {
-    margin-top: 2rem;
-}
-
-.direccion-texto {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--color-texto);
-    margin-bottom: 0.5rem;
-}
-
-.horario-texto {
-    font-size: 1.1rem;
-    color: var(--color-texto);
-}
-
 .menu-section [class*="col-"] {
     padding: 0 30px; 
 }
 
-.footer {
-    background-color: var(--color-verde-principal);
-    padding: 2rem 0;
-    box-shadow: 0 -4px 6px var(--color-sombra);
-    text-align: center;
-}
 
-.footer-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--color-texto);
-    margin-bottom: 1rem;
-}
-
-.social-links {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-}
-
-.social-links a {
-    color: var(--color-texto);
-    font-size: 3rem;
-    transition: all 0.3s ease;
-}
-
-.social-links a:hover {
-    color: var(--color-verde-oscuro);
-    transform: translateY(-5px);
-}
-
-.copyright {
-    font-size: 0.9rem;
-    color: var(--color-texto);
-    margin-top: 1rem;
-    opacity: 0.8;
-}
-
-.instagram-grid {
-    padding: 4rem 0;
-}
-
-.instagram-item {
-    position: relative;
-    aspect-ratio: 1;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px var(--color-sombra);
-    transition: transform 0.3s ease;
-}
-
-.instagram-item:hover {
-    transform: translateY(-5px);
-}
-
-.instagram-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.instagram-item a {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.galeria-section {
-    padding: 4rem 0;
-}
-
-.galeria-item {
-    position: relative;
-    aspect-ratio: 1;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px var(--color-sombra);
-}
-
-.galeria-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-#galeriaCarousel {
-    padding-bottom: 3rem;
-}
-
-#galeriaCarousel .carousel-indicators {
-    bottom: 0;
-}
-
-#galeriaCarousel .carousel-indicators button {
-    background-color: var(--color-verde-principal);
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin: 0 5px;
-}
-
-#galeriaCarousel .carousel-control-prev,
-#galeriaCarousel .carousel-control-next {
-    width: 5%;
-    color: var(--color-verde-principal);
-}
-
-#galeriaCarousel .carousel-control-prev-icon,
-#galeriaCarousel .carousel-control-next-icon {
-    filter: invert(1) brightness(70%);
-}
-
+/* ---------Sobre Kawhe--------- */
 .sobre-kawhe {
     padding: 4rem 0;
 }
-
 .sobre-kawhe-content {
     text-align: center;
     padding: 2rem;
@@ -343,7 +177,6 @@ main {
     border-radius: 15px;
     box-shadow: 0 4px 6px var(--color-sombra);
 }
-
 .sobre-kawhe-destacado {
     font-size: 1.5rem;
     font-weight: 600;
@@ -352,14 +185,12 @@ main {
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--color-verde-principal);
 }
-
 .sobre-kawhe-texto p {
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 1.5rem;
     color: var(--color-texto);
 }
-
 .sobre-kawhe-cta {
     font-size: 1.3rem !important;
     font-weight: 600;
@@ -367,40 +198,180 @@ main {
     margin-top: 2rem;
 }
 
-/* Estilos para el Panel de Administración */
+
+/* ---------Instagram--------- */
+.instagram-grid {
+    padding: 4rem 0;
+}
+.instagram-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--color-sombra);
+    transition: transform 0.3s ease;
+}
+.instagram-item:hover {
+    transform: translateY(-5px);
+}
+.instagram-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.instagram-item a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ---------Galeria--------- */
+.galeria-section {
+    padding: 4rem 0;
+}
+.galeria-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+.galeria-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+#galeriaCarousel {
+    padding-bottom: 3rem;
+}
+#galeriaCarousel .carousel-indicators {
+    bottom: 0;
+}
+#galeriaCarousel .carousel-indicators button {
+    background-color: var(--color-verde-principal);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+#galeriaCarousel .carousel-control-prev,
+#galeriaCarousel .carousel-control-next {
+    width: 5%;
+    color: var(--color-verde-principal);
+}
+#galeriaCarousel .carousel-control-prev-icon,
+#galeriaCarousel .carousel-control-next-icon {
+    filter: invert(1) brightness(70%);
+}
+
+
+/* ---------Ubicación--------- */
+.ubicacion-section {
+    padding: 4rem 0;
+}
+.mapa-container {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px var(--color-sombra);
+}
+.direccion-container {
+    margin-top: 2rem;
+}
+.direccion-texto {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--color-texto);
+    margin-bottom: 0.5rem;
+}
+.horario-texto {
+    font-size: 1.1rem;
+    color: var(--color-texto);
+}
+
+
+/* ---------Footer--------- */
+.footer {
+    background-color: var(--color-verde-principal);
+    padding: 2rem 0;
+    box-shadow: 0 -4px 6px var(--color-sombra);
+    text-align: center;
+}
+.footer-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--color-texto);
+    margin-bottom: 1rem;
+}
+.social-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+.social-links a {
+    color: var(--color-texto);
+    font-size: 3rem;
+    transition: all 0.3s ease;
+}
+.social-links a:hover {
+    color: var(--color-verde-oscuro);
+    transform: translateY(-5px);
+}
+.copyright {
+    font-size: 0.9rem;
+    color: var(--color-texto);
+    margin-top: 1rem;
+    opacity: 0.8;
+}
+
+
+
+
+/* ------------------------------ADMIN------------------------------ */
 .editable {
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 0.5rem;
     border-radius: 5px;
 }
-
 .editable:hover {
     background-color: var(--color-verde-principal);
     transform: translateY(-2px);
 }
+.panel-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color:#3f6322;
+}
+.panel-subtitle {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: #5d8a38;
+}
 
 
-/* Estilos para el Modal */
+/* ---------Modal--------- */
 .modal-content {
     background-color: var(--color-crema-principal);
     border: none;
     border-radius: 15px;
     box-shadow: 0 4px 6px var(--color-sombra);
 }
-
 .modal-header {
     background-color: var(--color-verde-principal);
     color: var(--color-texto);
     border-radius: 15px 15px 0 0;
     border-bottom: none;
 }
-
 .modal-body {
     padding: 2rem;
 }
 
-/* Estilos para el Login */
+
+/* ---------Login--------- */
 .login-container {
     max-width: 400px;
     margin: 100px auto;
@@ -409,13 +380,11 @@ main {
     border-radius: 15px;
     box-shadow: 0 4px 6px var(--color-sombra);
 }
-
 .login-logo {
     max-width: 200px;
     margin: 0 auto 2rem;
     display: block;
 }
-
 .login-title {
     color: var(--color-texto);
     text-align: center;
@@ -423,6 +392,8 @@ main {
     font-weight: bold;
 }
 
+
+/* ---------Botones y Fromularios--------- */
 .btn-primary {
     background-color: var(--color-verde-principal);
     border: none;
@@ -431,23 +402,73 @@ main {
     font-weight: bold;
     transition: all 0.3s ease;
 }
-
 .btn-primary:hover {
     background-color: var(--color-verde-oscuro);
     transform: translateY(-2px);
 }
-
 .form-control {
     border: 2px solid var(--color-verde-principal);
     border-radius: 8px;
     padding: 0.8rem;
 }
-
 .form-control:focus {
     box-shadow: 0 0 0 0.2rem rgba(194,206,184,0.25);
     border-color: var(--color-verde-oscuro);
 }
+.btn-success {
+    background-color: var(--color-verde-principal);
+    border-color: var(--color-verde-principal);
+    color: var(--color-texto);
+}
+.btn-success:hover {
+    background-color: var(--color-verde-oscuro);
+    border-color: var(--color-verde-oscuro);
+    color: white;
+}
+.btn-volver {
+    background-color: var(--color-verde-oscuro);
+    border-color: var(--color-verde-oscuro);
+    color: var(--color-texto);
+}
+.btn-volver:hover {
+    background-color: #94af7e;
+    border-color: #94af7e;
+    color: white;
+}
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+    color: white;
+}
+.nav-panel .navbar-toggler {
+    border-color: #94af7e;
+}
+.editable:hover {
+    background-color: rgba(194,206,184,0.2);
+    cursor: pointer;
+}
+.menu-item.editing {
+    background-color: rgba(194,206,184,0.3);
+    padding: 10px;
+    border-radius: 5px;
+}
+.edit-form {
+    margin-top: 10px;
+}
+.edit-buttons {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
 
+
+
+/* ------------------------------Media Queries------------------------------ */
 @media (max-width: 991.98px) {
     #menu-nav .navbar-collapse {
         background-color: var(--color-verde-principal);
@@ -466,108 +487,56 @@ main {
     }
 }
 
+
 @media (max-width: 768px) {
     .ubicacion-section {
         padding: 2rem 0;
     }
-    
     .mapa-container {
         margin: 0 1rem;
     }
-    
     #menu-nav .nav-logo {
         height: 50px;
         width: auto;
         margin: 0 1rem;
     }
-    
     .menu-section .col-md-6 {
         margin-bottom: 2rem;
     }
-    
     .footer {
         padding: 2rem 0;
     }
-    
     .social-links {
         gap: 1.5rem;
     }
-    
     .social-links a {
         font-size: 2rem;
         width: 50px;
         height: 50px;
     }
-    
     .instagram-grid {
         padding: 2rem 0;
     }
-    
     .galeria-section {
         padding: 2rem 0;
     }
-    
     .galeria-item {
         margin-bottom: 1rem;
     }
-    
     .sobre-kawhe {
         padding: 2rem 0;
     }
-    
     .sobre-kawhe-content {
         padding: 1.5rem;
     }
-    
     .sobre-kawhe-destacado {
         font-size: 1.3rem;
     }
-    
     .sobre-kawhe-texto p {
         font-size: 1rem;
     }
 }
 
-.btn-success {
-    background-color: var(--color-verde-principal);
-    border-color: var(--color-verde-principal);
-    color: var(--color-texto);
-}
-
-.btn-success:hover {
-    background-color: var(--color-verde-oscuro);
-    border-color: var(--color-verde-oscuro);
-    color: white;
-}
-
-.btn-volver {
-    background-color: var(--color-verde-oscuro);
-    border-color: var(--color-verde-oscuro);
-    color: var(--color-texto);
-}
-
-.btn-volver:hover {
-    background-color: #94af7e;
-    border-color: #94af7e;
-    color: white;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #bb2d3b;
-    border-color: #b02a37;
-    color: white;
-}
-
-/* Estilos para la navegación del panel */
-.nav-panel .navbar-toggler {
-    border-color: #94af7e;
-}
 
 @media (max-width: 991.98px) {
     .nav-panel .navbar-collapse {
@@ -576,12 +545,10 @@ main {
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    
     .nav-panel .d-flex {
         flex-direction: column;
         width: 100%;
     }
-    
     .nav-panel .btn {
         width: 100%;
         text-align: center;
