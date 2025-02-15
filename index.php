@@ -79,23 +79,49 @@ include("conexion.php");
                         }
                         
                         echo '<div class="menu-category mb-4">';
-                        echo '<h3 class="categoria-title mb-3">' . $categoria['nombre'] . '</h3>';
+                        echo "<!-- Debug: Categoría actual: '" . $categoria['nombre'] . "' -->";
+                        if($categoria['nombre'] === 'Cafés') {
+                            echo '<div class="categoria-header">';
+                            echo '<h3 class="categoria-title mb-0">' . $categoria['nombre'] . '</h3>';
+                            echo '<div class="coffee-sizes">';
+                            echo '<i class="fas fa-coffee coffee-icon size-s"></i>';
+                            echo '<i class="fas fa-coffee coffee-icon size-m"></i>';
+                            echo '<i class="fas fa-coffee coffee-icon size-l"></i>';
+                            echo '<i class="fas fa-coffee coffee-icon size-xl"></i>';
+                            echo '</div>';
+                            echo '</div>';
+                        } else {
+                            echo '<h3 class="categoria-title mb-3">' . $categoria['nombre'] . '</h3>';
+                        }
                         
                         // Productos
-                        $query_productos = "SELECT * FROM productos WHERE id_categoria = {$categoria['id_categoria']} AND activo = 1";
+                        $query_productos = "SELECT id_producto, nombre, descripcion, precio, 
+                                              precio_chico, precio_mediano, precio_grande, precio_extra_grande 
+                                       FROM productos 
+                                       WHERE id_categoria = {$categoria['id_categoria']} 
+                                       AND activo = 1";
                         $result_productos = mysqli_query($conexion, $query_productos);
                         
                         while($producto = mysqli_fetch_assoc($result_productos)) {
                             echo '<div class="menu-item">';
                             echo '<div class="producto-info">';
-                            echo '<div class="producto-nombre">' . $producto['nombre'];
+                            echo '<div class="producto-nombre">' . $producto['nombre'] . '</div>';
                             if(!empty($producto['descripcion'])) {
                                 echo '<div class="producto-descripcion">' . $producto['descripcion'] . '</div>';
                             }
                             echo '</div>';
-                            echo '</div>';
-                            if($producto['precio'] > 0) {
-                                echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
+                            
+                            if($categoria['nombre'] === 'Cafés') {
+                                echo '<div class="precios-cafe">';
+                                echo '<div class="precio-size">' . ($producto['precio_chico'] > 0 ? '$' . number_format($producto['precio_chico'], 0) : '-') . '</div>';
+                                echo '<div class="precio-size">' . ($producto['precio_mediano'] > 0 ? '$' . number_format($producto['precio_mediano'], 0) : '-') . '</div>';
+                                echo '<div class="precio-size">' . ($producto['precio_grande'] > 0 ? '$' . number_format($producto['precio_grande'], 0) : '-') . '</div>';
+                                echo '<div class="precio-size">' . ($producto['precio_extra_grande'] > 0 ? '$' . number_format($producto['precio_extra_grande'], 0) : '-') . '</div>';
+                                echo '</div>';
+                            } else {
+                                if($producto['precio'] > 0) {
+                                    echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
+                                }
                             }
                             echo '</div>';
                         }

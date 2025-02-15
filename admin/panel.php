@@ -4,117 +4,188 @@ require_once('../conexion.php');
 
 // Procesar actualizaciones
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'update_item':
-                try {
-                    // Validar datos
-                    $table = mysqli_real_escape_string($conexion, $_POST['table']);
-                    $id = (int)$_POST['id'];
-                    $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
-                    
-                    // Consulta según el tipo de tabla
-                    switch ($table) {
-                        case 'secciones':
-                            $query = "UPDATE secciones SET nombre = ? WHERE id_seccion = ?";
-                            $types = "si";
-                            $params = array($nombre, $id);
-                            break;
-                            
-                        case 'categorias':
-                            $query = "UPDATE categorias SET nombre = ? WHERE id_categoria = ?";
-                            $types = "si";
-                            $params = array($nombre, $id);
-                            break;
-                            
-                        case 'productos':
-                            $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
-                            $descripcion = isset($_POST['descripcion']) ? mysqli_real_escape_string($conexion, $_POST['descripcion']) : null;
-                            $query = "UPDATE productos SET nombre = ?, descripcion = ?, precio = ? WHERE id_producto = ?";
-                            $types = "ssdi";
-                            $params = array($nombre, $descripcion, $precio, $id);
-                            break;
-                            
-                        default:
-                            throw new Exception('Tipo de tabla no válido: ' . $table);
-                    }
-                    
-                    $stmt = mysqli_prepare($conexion, $query);
-                    if ($stmt === false) {
-                        throw new Exception('Error en la preparación de la consulta: ' . mysqli_error($conexion));
-                    }
-                    
-                    mysqli_stmt_bind_param($stmt, $types, ...$params);
-                    
-                    if (mysqli_stmt_execute($stmt)) {
-                        $response = ['success' => true];
-                    } else {
-                        throw new Exception('Error al ejecutar la consulta: ' . mysqli_stmt_error($stmt));
-                    }
-                    
-                    mysqli_stmt_close($stmt);
-                    
-                } catch (Exception $e) {
-                    $response = ['success' => false, 'error' => $e->getMessage()];
-                }
-                
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;
+    // Limpiar cualquier salida anterior
+    ob_clean();
+    
+    // Establecer headers
+    header('Content-Type: application/json');
+    
+    $action = $_POST['action'] ?? '';
+    
+    try {
+        if (empty($action)) {
+            throw new Exception('Acción no especificada');
+        }
+        
+        switch($action) {
             case 'add_item':
-                try {
-                    $table = mysqli_real_escape_string($conexion, $_POST['table']);
-                    $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
-                    
-                    switch ($table) {
-                        case 'secciones':
-                            $query = "INSERT INTO secciones (nombre, activo) VALUES (?, 1)";
-                            $types = "s";
-                            $params = array($nombre);
-                            break;
-                            
-                        case 'categorias':
-                            $id_seccion = (int)$_POST['id_seccion'];
-                            $query = "INSERT INTO categorias (nombre, id_seccion, activo) VALUES (?, ?, 1)";
-                            $types = "si";
-                            $params = array($nombre, $id_seccion);
-                            break;
-                            
-                        case 'productos':
-                            $id_categoria = (int)$_POST['id_categoria'];
-                            $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
-                            $descripcion = isset($_POST['descripcion']) ? mysqli_real_escape_string($conexion, $_POST['descripcion']) : null;
-                            $query = "INSERT INTO productos (nombre, descripcion, precio, id_categoria, activo) VALUES (?, ?, ?, ?, 1)";
-                            $types = "ssdi";
-                            $params = array($nombre, $descripcion, $precio, $id_categoria);
-                            break;
-                            
-                        default:
-                            throw new Exception('Tipo de tabla no válido: ' . $table);
-                    }
-                    
-                    $stmt = mysqli_prepare($conexion, $query);
-                    if ($stmt === false) {
-                        throw new Exception('Error en la preparación de la consulta: ' . mysqli_error($conexion));
-                    }
-                    
-                    mysqli_stmt_bind_param($stmt, $types, ...$params);
-                    
-                    if (mysqli_stmt_execute($stmt)) {
-                        $response = ['success' => true];
-                    } else {
-                        throw new Exception('Error al ejecutar la consulta: ' . mysqli_stmt_error($stmt));
-                    }
-                    
-                    mysqli_stmt_close($stmt);
-                    
-                } catch (Exception $e) {
-                    $response = ['success' => false, 'error' => $e->getMessage()];
+                $table = $_POST['table'] ?? '';
+                if (empty($table)) {
+                    throw new Exception('Tabla no especificada');
                 }
                 
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;
+                $nombre = mysqli_real_escape_string($conexion, $_POST['nombre'] ?? '');
+                if (empty($nombre)) {
+                    throw new Exception('Nombre es requerido');
+                }
+                
+                switch($table) {
+                    case 'secciones':
+                        $query = "INSERT INTO secciones (nombre, activo) VALUES (?, 1)";
+                        $stmt = mysqli_prepare($conexion, $query);
+                        mysqli_stmt_bind_param($stmt, "s", $nombre);
+                        break;
+                        
+                    case 'categorias':
+                        $id_seccion = intval($_POST['id_seccion'] ?? 0);
+                        if ($id_seccion <= 0) {
+                            throw new Exception('Sección inválida');
+                        }
+                        
+                        $query = "INSERT INTO categorias (nombre, id_seccion, activo) VALUES (?, ?, 1)";
+                        $stmt = mysqli_prepare($conexion, $query);
+                        mysqli_stmt_bind_param($stmt, "si", $nombre, $id_seccion);
+                        break;
+                        
+                    case 'productos':
+                        $id_categoria = intval($_POST['id_categoria'] ?? 0);
+                        if ($id_categoria <= 0) {
+                            throw new Exception('Categoría inválida');
+                        }
+                        
+                        $descripcion = mysqli_real_escape_string($conexion, $_POST['descripcion'] ?? '');
+                        
+                        // Verificar si es categoría de café
+                        $check_query = "SELECT nombre FROM categorias WHERE id_categoria = ?";
+                        $check_stmt = mysqli_prepare($conexion, $check_query);
+                        mysqli_stmt_bind_param($check_stmt, "i", $id_categoria);
+                        mysqli_stmt_execute($check_stmt);
+                        $result_check = mysqli_stmt_get_result($check_stmt);
+                        $categoria = mysqli_fetch_assoc($result_check);
+                        
+                        if ($categoria['nombre'] === 'Cafés') {
+                            $precio_chico = floatval($_POST['precio_chico'] ?? 0);
+                            $precio_mediano = floatval($_POST['precio_mediano'] ?? 0);
+                            $precio_grande = floatval($_POST['precio_grande'] ?? 0);
+                            $precio_extra_grande = floatval($_POST['precio_extra_grande'] ?? 0);
+                            
+                            $query = "INSERT INTO productos (nombre, descripcion, id_categoria, precio_chico, precio_mediano, precio_grande, precio_extra_grande, activo) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
+                            $stmt = mysqli_prepare($conexion, $query);
+                            mysqli_stmt_bind_param($stmt, "ssidddd", 
+                                $nombre,
+                                $descripcion,
+                                $id_categoria,
+                                $precio_chico,
+                                $precio_mediano,
+                                $precio_grande,
+                                $precio_extra_grande
+                            );
+                        } else {
+                            $precio = floatval($_POST['precio'] ?? 0);
+                            
+                            $query = "INSERT INTO productos (nombre, descripcion, id_categoria, precio, activo) 
+                                     VALUES (?, ?, ?, ?, 1)";
+                            $stmt = mysqli_prepare($conexion, $query);
+                            mysqli_stmt_bind_param($stmt, "ssid", 
+                                $nombre,
+                                $descripcion,
+                                $id_categoria,
+                                $precio
+                            );
+                        }
+                        break;
+                        
+                    default:
+                        throw new Exception('Tipo de tabla no válido');
+                }
+                
+                if (!mysqli_stmt_execute($stmt)) {
+                    throw new Exception(mysqli_stmt_error($stmt));
+                }
+                
+                echo json_encode(['success' => true]);
+                break;
+                
+            case 'update_item':
+                $table = $_POST['table'];
+                $id = intval($_POST['id']);
+                
+                if ($table === 'productos') {
+                    // Verificar si es un café
+                    $check_query = "SELECT c.nombre FROM productos p 
+                                  JOIN categorias c ON p.id_categoria = c.id_categoria 
+                                  WHERE p.id_producto = ?";
+                    $stmt_check = mysqli_prepare($conexion, $check_query);
+                    mysqli_stmt_bind_param($stmt_check, "i", $id);
+                    mysqli_stmt_execute($stmt_check);
+                    $result_check = mysqli_stmt_get_result($stmt_check);
+                    $categoria = mysqli_fetch_assoc($result_check);
+                    
+                    $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
+                    $descripcion = isset($_POST['descripcion']) ? mysqli_real_escape_string($conexion, $_POST['descripcion']) : '';
+                    
+                    if ($categoria['nombre'] === 'Cafés') {
+                        $precio_chico = isset($_POST['precio_chico']) ? floatval($_POST['precio_chico']) : 0;
+                        $precio_mediano = isset($_POST['precio_mediano']) ? floatval($_POST['precio_mediano']) : 0;
+                        $precio_grande = isset($_POST['precio_grande']) ? floatval($_POST['precio_grande']) : 0;
+                        $precio_extra_grande = isset($_POST['precio_extra_grande']) ? floatval($_POST['precio_extra_grande']) : 0;
+                        
+                        $query = "UPDATE productos SET 
+                                 nombre = ?,
+                                 descripcion = ?,
+                                 precio_chico = ?,
+                                 precio_mediano = ?,
+                                 precio_grande = ?,
+                                 precio_extra_grande = ?
+                                 WHERE id_producto = ?";
+                                 
+                        $stmt = mysqli_prepare($conexion, $query);
+                        mysqli_stmt_bind_param($stmt, "ssddddi", 
+                            $nombre,
+                            $descripcion,
+                            $precio_chico,
+                            $precio_mediano,
+                            $precio_grande,
+                            $precio_extra_grande,
+                            $id
+                        );
+                    } else {
+                        $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
+                        
+                        $query = "UPDATE productos SET 
+                                 nombre = ?,
+                                 descripcion = ?,
+                                 precio = ?
+                                 WHERE id_producto = ?";
+                                 
+                        $stmt = mysqli_prepare($conexion, $query);
+                        mysqli_stmt_bind_param($stmt, "ssdi", 
+                            $nombre,
+                            $descripcion,
+                            $precio,
+                            $id
+                        );
+                    }
+                } else if ($table === 'secciones') {
+                    $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
+                    $query = "UPDATE secciones SET nombre = ? WHERE id_seccion = ?";
+                    $stmt = mysqli_prepare($conexion, $query);
+                    mysqli_stmt_bind_param($stmt, "si", $nombre, $id);
+                } else if ($table === 'categorias') {
+                    $nombre = mysqli_real_escape_string($conexion, $_POST['nombre']);
+                    $query = "UPDATE categorias SET nombre = ? WHERE id_categoria = ?";
+                    $stmt = mysqli_prepare($conexion, $query);
+                    mysqli_stmt_bind_param($stmt, "si", $nombre, $id);
+                }
+                
+                if (!mysqli_stmt_execute($stmt)) {
+                    throw new Exception(mysqli_stmt_error($stmt));
+                }
+                
+                echo json_encode(['success' => true]);
+                break;
+                
             case 'delete_item':
                 try {
                     $table = mysqli_real_escape_string($conexion, $_POST['table']);
@@ -165,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mysqli_stmt_bind_param($stmt, "i", $id);
                     
                     if (mysqli_stmt_execute($stmt)) {
-                        $response = ['success' => true];
+                        echo json_encode(['success' => true]);
                     } else {
                         throw new Exception('Error al ejecutar la consulta: ' . mysqli_stmt_error($stmt));
                     }
@@ -173,14 +244,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mysqli_stmt_close($stmt);
                     
                 } catch (Exception $e) {
-                    $response = ['success' => false, 'error' => $e->getMessage()];
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
                 }
+                break;
                 
-                header('Content-Type: application/json');
-                echo json_encode($response);
-                exit;
+            default:
+                throw new Exception('Acción no válida');
         }
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
+    exit;
 }
 ?>
 
@@ -191,6 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrativo - Kawhe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -220,13 +297,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <!-- Botones de acción -->
                 <div class="d-flex justify-content-center gap-3 mb-4">
-                    <button class="btn btn-success" onclick="showAddModal('seccion')">
+                    <button class="btn btn-success" id="btnAddSeccion">
                         <i class="fas fa-plus"></i> Agregar Sección
                     </button>
-                    <button class="btn btn-success" onclick="showAddModal('categoria')">
+                    <button class="btn btn-success" id="btnAddCategoria">
                         <i class="fas fa-plus"></i> Agregar Categoría
                     </button>
-                    <button class="btn btn-success" onclick="showAddModal('producto')">
+                    <button class="btn btn-success" id="btnAddProducto">
                         <i class="fas fa-plus"></i> Agregar Producto
                     </button>
                 </div>
@@ -260,27 +337,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         
                         echo '<div class="menu-category mb-4">';
-                        echo '<h3 class="categoria-title mb-3 editable" 
-                                 data-type="categoria" 
-                                 data-id="' . $categoria['id_categoria'] . '">' . $categoria['nombre'] . '</h3>';
+                        
+                        // Mostrar header de categoría
+                        if($categoria['nombre'] === 'Cafés') {
+                            echo '<div class="categoria-header d-flex justify-content-between align-items-center">';
+                            echo '<h3 class="categoria-title mb-0 editable" data-type="categoria" data-id="' . $categoria['id_categoria'] . '">' . $categoria['nombre'] . '</h3>';
+                            echo '<div class="coffee-sizes">';
+                            echo '<i class="fas fa-coffee coffee-icon size-s"></i>';
+                            echo '<i class="fas fa-coffee coffee-icon size-m"></i>';
+                            echo '<i class="fas fa-coffee coffee-icon size-l"></i>';
+                            echo '<i class="fas fa-coffee coffee-icon size-xl"></i>';
+                            echo '</div>';
+                            echo '</div>';
+                        } else {
+                            echo '<h3 class="categoria-title mb-3 editable" data-type="categoria" data-id="' . $categoria['id_categoria'] . '">' . $categoria['nombre'] . '</h3>';
+                        }
                         
                         // Obtener productos
                         $query_productos = "SELECT * FROM productos WHERE id_categoria = {$categoria['id_categoria']} AND activo = 1";
                         $result_productos = mysqli_query($conexion, $query_productos);
                         
                         while($producto = mysqli_fetch_assoc($result_productos)) {
-                            echo '<div class="menu-item editable" 
-                                      data-type="producto" 
-                                      data-id="' . $producto['id_producto'] . '">';
+                            echo '<div class="menu-item editable" data-type="producto" data-id="' . $producto['id_producto'] . '">';
                             echo '<div class="producto-info">';
-                            echo '<div class="producto-nombre">' . $producto['nombre'];
+                            echo '<div class="producto-nombre">' . $producto['nombre'] . '</div>';
                             if(!empty($producto['descripcion'])) {
                                 echo '<div class="producto-descripcion">' . $producto['descripcion'] . '</div>';
                             }
                             echo '</div>';
-                            echo '</div>';
-                            if($producto['precio'] > 0) {
-                                echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
+                            
+                            if($categoria['nombre'] === 'Cafés') {
+                                echo '<div class="precios-cafe">';
+                                echo '<div class="precio-size">' . ($producto['precio_chico'] > 0 ? '$' . number_format($producto['precio_chico'], 0) : '-') . '</div>';
+                                echo '<div class="precio-size">' . ($producto['precio_mediano'] > 0 ? '$' . number_format($producto['precio_mediano'], 0) : '-') . '</div>';
+                                echo '<div class="precio-size">' . ($producto['precio_grande'] > 0 ? '$' . number_format($producto['precio_grande'], 0) : '-') . '</div>';
+                                echo '<div class="precio-size">' . ($producto['precio_extra_grande'] > 0 ? '$' . number_format($producto['precio_extra_grande'], 0) : '-') . '</div>';
+                                echo '</div>';
+                            } else {
+                                if($producto['precio'] > 0) {
+                                    echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
+                                }
                             }
                             echo '</div>';
                         }
@@ -322,25 +418,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Función global para mostrar el modal
+        let editModal;
+        
         document.addEventListener('DOMContentLoaded', function() {
-            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            
+            // Event listeners para los botones de agregar
+            document.getElementById('btnAddSeccion').addEventListener('click', () => showAddModal('seccion'));
+            document.getElementById('btnAddCategoria').addEventListener('click', () => showAddModal('categoria'));
+            document.getElementById('btnAddProducto').addEventListener('click', () => showAddModal('producto'));
+            
+            // Función para manejar el envío del formulario
+            async function handleSubmit(e) {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                
+                try {
+                    const response = await fetch('panel.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new Error('La respuesta del servidor no es JSON válido');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert('Error al guardar los cambios: ' + (result.error || 'Error desconocido'));
+                        console.error('Error details:', result);
+                    }
+                } catch (error) {
+                    console.error('Error completo:', error);
+                    alert('Error al procesar la solicitud: ' + error.message);
+                }
+            }
             
             // Mostrar el modal de agregar
-            window.showAddModal = async function(type) {
+            async function showAddModal(type) {
                 const modalTitle = document.querySelector('.modal-title');
                 modalTitle.textContent = `Agregar ${type.charAt(0).toUpperCase() + type.slice(1)}`;
                 
-                // Obtener secciones o categorías 
+                const modalBody = document.querySelector('.modal-body');
+                
+                // Obtener secciones para el select de categorías
                 let selectOptions = '';
-                if (type === 'categoria' || type === 'producto') {
-                    const response = await fetch(`get_options.php?type=${type}`);
-                    const data = await response.json();
-                    selectOptions = data.map(item => 
-                        `<option value="${item.id}">${item.nombre}</option>`
-                    ).join('');
+                if (type === 'categoria') {
+                    try {
+                        const response = await fetch('get_options.php?type=secciones');
+                        const result = await response.json();
+                        if (result.success) {
+                            selectOptions = result.data.map(item => 
+                                `<option value="${item.id}">${item.nombre}</option>`
+                            ).join('');
+                        } else {
+                            throw new Error(result.error || 'Error al obtener secciones');
+                        }
+                    } catch (error) {
+                        console.error('Error al obtener secciones:', error);
+                        selectOptions = '<option value="">Error al cargar secciones</option>';
+                    }
                 }
                 
-                const modalBody = document.querySelector('.modal-body');
+                // Obtener categorías para el select de productos
+                let categoriaOptions = '';
+                if (type === 'producto') {
+                    try {
+                        const response = await fetch('get_options.php?type=categorias');
+                        const result = await response.json();
+                        if (result.success) {
+                            categoriaOptions = result.data.map(item => 
+                                `<option value="${item.id}">${item.nombre}</option>`
+                            ).join('');
+                        } else {
+                            throw new Error(result.error || 'Error al obtener categorías');
+                        }
+                    } catch (error) {
+                        console.error('Error al obtener categorías:', error);
+                        categoriaOptions = '<option value="">Error al cargar categorías</option>';
+                    }
+                }
+                
                 modalBody.innerHTML = `
                     <form id="addForm">
                         <input type="hidden" name="action" value="add_item">
@@ -364,18 +527,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ${type === 'producto' ? `
                             <div class="mb-3">
                                 <label class="form-label">Categoría</label>
-                                <select class="form-control" name="id_categoria" required>
+                                <select class="form-control" name="id_categoria" required onchange="handleCategoriaChange(this)">
                                     <option value="">Seleccionar categoría</option>
-                                    ${selectOptions}
+                                    ${categoriaOptions}
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Descripción (opcional)</label>
                                 <textarea class="form-control" name="descripcion" rows="2"></textarea>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Precio</label>
-                                <input type="number" step="1" class="form-control" name="precio" value="0">
+                            <div id="precios-container">
+                                <div class="mb-3">
+                                    <label class="form-label">Precio</label>
+                                    <input type="number" step="1" class="form-control" name="precio" value="0">
+                                </div>
                             </div>
                         ` : ''}
                         
@@ -388,66 +553,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 const form = document.getElementById('addForm');
                 form.addEventListener('submit', handleSubmit);
-                form.addEventListener('keypress', handleEnterKey);
                 
                 editModal.show();
+            }
+            
+            // Función para manejar el cambio de categoría
+            window.handleCategoriaChange = function(select) {
+                const preciosContainer = document.getElementById('precios-container');
+                if (select.options[select.selectedIndex].text === 'Cafés') {
+                    preciosContainer.innerHTML = `
+                        <div class="mb-3">
+                            <label class="form-label">Precio Chico</label>
+                            <input type="number" step="1" class="form-control" name="precio_chico" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio Mediano</label>
+                            <input type="number" step="1" class="form-control" name="precio_mediano" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio Grande</label>
+                            <input type="number" step="1" class="form-control" name="precio_grande" value="0">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio Extra Grande</label>
+                            <input type="number" step="1" class="form-control" name="precio_extra_grande" value="0">
+                        </div>
+                    `;
+                } else {
+                    preciosContainer.innerHTML = `
+                        <div class="mb-3">
+                            <label class="form-label">Precio</label>
+                            <input type="number" step="1" class="form-control" name="precio" value="0">
+                        </div>
+                    `;
+                }
             };
             
-            // Manejo tecla Enter
-            function handleEnterKey(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    this.dispatchEvent(new Event('submit'));
-                }
-            }
-            
-            // Manejar envío del formulario
-            async function handleSubmit(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                
-                try {
-                    const response = await fetch('panel.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        location.reload();
-                    } else {
-                        alert('Error al guardar los cambios: ' + (result.error || 'Error desconocido'));
-                        console.error('Error details:', result);
-                    }
-                } catch (error) {
-                    console.error('Error completo:', error);
-                    alert('Error al procesar la solicitud: ' + error.message);
-                }
-            }
-            
+            // Event listeners para elementos editables
             document.querySelectorAll('.editable').forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', async function() {
                     const type = this.dataset.type;
                     const id = this.dataset.id;
                     let currentName, currentPrice, currentDescription;
                     
+                    // Determinar si el producto está en la categoría Cafés
+                    let isInCoffeeCategory = false;
                     if (type === 'producto') {
-                        // Obtener nombre, precio y descripción
+                        const categoryTitle = this.closest('.menu-category').querySelector('.categoria-title');
+                        isInCoffeeCategory = categoryTitle && categoryTitle.textContent.trim() === 'Cafés';
+                        
+                        // Obtener los precios actuales
                         currentName = this.querySelector('.producto-nombre').childNodes[0].textContent.trim();
-                        const precioElement = this.querySelector('.producto-precio');
-                        currentPrice = precioElement ? 
-                            precioElement.textContent
-                                .replace('$', '')
-                                .replace(/,/g, '')
-                                .replace(/\s/g, '')
-                                .trim() : 
-                            '0';
                         const descripcionElement = this.querySelector('.producto-descripcion');
                         currentDescription = descripcionElement ? descripcionElement.textContent.trim() : '';
+                        
+                        if (isInCoffeeCategory) {
+                            const preciosElements = this.querySelectorAll('.precio-size');
+                            currentPriceChico = preciosElements[0] ? preciosElements[0].textContent.replace('$', '').replace(/,/g, '').trim() : '0';
+                            currentPriceMediano = preciosElements[1] ? preciosElements[1].textContent.replace('$', '').replace(/,/g, '').trim() : '0';
+                            currentPriceGrande = preciosElements[2] ? preciosElements[2].textContent.replace('$', '').replace(/,/g, '').trim() : '0';
+                            currentPriceExtraGrande = preciosElements[3] ? preciosElements[3].textContent.replace('$', '').replace(/,/g, '').trim() : '0';
+                        } else {
+                            const precioElement = this.querySelector('.producto-precio');
+                            currentPrice = precioElement ? precioElement.textContent.replace('$', '').replace(/,/g, '').trim() : '0';
+                        }
                     } else {
                         currentName = this.textContent.trim();
                     }
+                    
+                    const modalTitle = document.querySelector('.modal-title');
+                    modalTitle.textContent = `Editar ${type.charAt(0).toUpperCase() + type.slice(1)}`;
                     
                     const modalBody = document.querySelector('.modal-body');
                     modalBody.innerHTML = `
@@ -464,12 +639,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ${type === 'producto' ? `
                                 <div class="mb-3">
                                     <label class="form-label">Descripción</label>
-                                    <textarea class="form-control" name="descripcion" rows="2">${currentDescription}</textarea>
+                                    <textarea class="form-control" name="descripcion" rows="2">${currentDescription || ''}</textarea>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Precio</label>
-                                    <input type="number" step="1" class="form-control" name="precio" value="${currentPrice}">
-                                </div>
+                                ${isInCoffeeCategory ? `
+                                    <div class="mb-3">
+                                        <label class="form-label">Precio Chico</label>
+                                        <input type="number" step="1" class="form-control" name="precio_chico" value="${currentPriceChico || 0}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Precio Mediano</label>
+                                        <input type="number" step="1" class="form-control" name="precio_mediano" value="${currentPriceMediano || 0}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Precio Grande</label>
+                                        <input type="number" step="1" class="form-control" name="precio_grande" value="${currentPriceGrande || 0}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Precio Extra Grande</label>
+                                        <input type="number" step="1" class="form-control" name="precio_extra_grande" value="${currentPriceExtraGrande || 0}">
+                                    </div>
+                                ` : `
+                                    <div class="mb-3">
+                                        <label class="form-label">Precio</label>
+                                        <input type="number" step="1" class="form-control" name="precio" value="${currentPrice || 0}">
+                                    </div>
+                                `}
                             ` : ''}
                             
                             <div class="d-flex justify-content-between align-items-center">
@@ -484,62 +678,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </form>
                     `;
                     
+                    document.getElementById('editForm').addEventListener('submit', handleSubmit);
                     editModal.show();
-                    
-                    // Enter
-                    const form = document.getElementById('editForm');
-                    form.addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault(); 
-                            form.dispatchEvent(new Event('submit'));
-                        }
-                    });
-                    
-                    form.addEventListener('submit', async function(e) {
-                        e.preventDefault();
-                        
-                        const formData = new FormData(this);
-                        try {
-                            const response = await fetch('panel.php', {
-                                method: 'POST',
-                                body: formData
-                            });
-                            
-                            const result = await response.json();
-                            
-                            if (result.success) {
-                                location.reload();
-                            } else {
-                                alert('Error al guardar los cambios: ' + (result.error || 'Error desconocido'));
-                                console.error('Error details:', result);
-                            }
-                        } catch (error) {
-                            console.error('Error completo:', error);
-                            alert('Error al procesar la solicitud: ' + error.message);
-                        }
-                    });
                 });
             });
-
+            
             // Función de eliminar
             window.deleteItem = async function(type, id) {
                 if (!confirm('¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.')) {
                     return;
                 }
-
+                
+                const formData = new FormData();
+                formData.append('action', 'delete_item');
+                formData.append('table', type === 'seccion' ? 'secciones' : type === 'categoria' ? 'categorias' : 'productos');
+                formData.append('id', id);
+                
                 try {
-                    const formData = new FormData();
-                    formData.append('action', 'delete_item');
-                    formData.append('table', type === 'seccion' ? 'secciones' : type === 'categoria' ? 'categorias' : 'productos');
-                    formData.append('id', id);
-
                     const response = await fetch('panel.php', {
                         method: 'POST',
                         body: formData
                     });
-
+                    
                     const result = await response.json();
-
+                    
                     if (result.success) {
                         location.reload();
                     } else {

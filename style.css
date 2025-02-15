@@ -106,6 +106,7 @@ main {
 /* ---------Menu--------- */
 .menu-section {
     font-family: 'Arial', sans-serif;
+    color: var(--color-texto);
 }
 .menu-title {
     font-size: 2rem;
@@ -120,6 +121,7 @@ main {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1.5rem;
+    padding: 0.5rem;
 }
 .menu-item {
     display: flex;
@@ -127,7 +129,7 @@ main {
     align-items: flex-start;
     margin-bottom: 1rem;
     position: relative;
-    gap: 15px;
+    padding: 0.5rem 0;
 }
 .menu-item::after {
     content: "";
@@ -145,9 +147,9 @@ main {
     z-index: 1;
 }
 .producto-nombre {
-    padding-bottom: 3px;
-    word-wrap: break-word;
-    hyphens: auto;
+    max-width: 65%;
+    padding-right: 10px;
+    margin-bottom: 0.2rem;
 }
 .producto-descripcion {
     font-size: 0.9rem;
@@ -163,6 +165,45 @@ main {
 }
 .menu-section [class*="col-"] {
     padding: 0 30px; 
+}
+
+.categoria-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.coffee-sizes {
+    display: flex;
+    gap: 2.6rem;
+    align-items: center;
+}
+
+.coffee-icon {
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.coffee-icon.size-s { font-size: 16px; }
+.coffee-icon.size-m { font-size: 20px; }
+.coffee-icon.size-l { font-size: 24px; }
+.coffee-icon.size-xl { font-size: 28px; }
+
+.precios-cafe {
+    display: flex;
+    gap: 1.2rem;
+    margin-left: auto;
+    z-index: 1;
+    padding-left: 10px;
+}
+
+.precio-size {
+    min-width: 45px;
+    text-align: right;
+    white-space: nowrap;
 }
 
 
@@ -332,7 +373,7 @@ main {
 .editable {
     cursor: pointer;
     transition: all 0.3s ease;
-    padding: 0.5rem;
+    padding: 0.5rem 0;
     border-radius: 5px;
 }
 .editable:hover {
@@ -485,6 +526,21 @@ main {
     .menu-category {
         margin: 1rem;
     }
+    .nav-panel .navbar-collapse {
+        padding: 1rem;
+        margin-top: 0.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .nav-panel .d-flex {
+        flex-direction: column;
+        width: 100%;
+    }
+    .nav-panel .btn {
+        width: 100%;
+        text-align: center;
+           margin-bottom: 0.5rem;
+    }
 }
 
 
@@ -535,23 +591,10 @@ main {
     .sobre-kawhe-texto p {
         font-size: 1rem;
     }
-}
-
-
-@media (max-width: 991.98px) {
-    .nav-panel .navbar-collapse {
-        padding: 1rem;
-        margin-top: 0.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .coffee-sizes {
+        gap: 1.8rem;
     }
-    .nav-panel .d-flex {
-        flex-direction: column;
-        width: 100%;
-    }
-    .nav-panel .btn {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 0.5rem;
+    .precios-cafe {
+        gap: 0.5rem;
     }
 }
