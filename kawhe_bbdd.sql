@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-02-2025 a las 21:24:18
+-- Tiempo de generación: 15-02-2025 a las 21:39:32
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -51,7 +51,8 @@ CREATE TABLE `categorias` (
   `id_categoria` int(11) NOT NULL,
   `id_seccion` int(11) DEFAULT NULL,
   `nombre` varchar(50) NOT NULL,
-  `activo` tinyint(1) DEFAULT 1
+  `activo` tinyint(1) DEFAULT 1,
+  `position` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -79,14 +80,7 @@ INSERT INTO `categorias` (`id_categoria`, `id_seccion`, `nombre`, `activo`) VALU
 (21, 3, 'Rolls', 1),
 (22, 3, 'Tortas', 1),
 (26, 4, 'Platos', 1),
-(27, 4, 'Menú del día', 1),
-(28, 5, 'CERDOS', 0),
-(30, 6, 'PROB-1', 0),
-(31, 7, 'Prueba Categoria', 0),
-(32, 8, 'Prueba Categoria Mobile', 0),
-(33, 10, 'PROBANDO cate', 0),
-(34, 11, 'PREUHJFG', 0),
-(35, 12, 'PREUVBA RAPIDA', 0);
+(27, 4, 'Menú del día', 1);
 
 -- --------------------------------------------------------
 
@@ -106,7 +100,8 @@ CREATE TABLE `productos` (
   `precio_chico` decimal(10,2) DEFAULT NULL,
   `precio_mediano` decimal(10,2) DEFAULT NULL,
   `precio_grande` decimal(10,2) DEFAULT NULL,
-  `precio_extra_grande` decimal(10,2) DEFAULT NULL
+  `precio_extra_grande` decimal(10,2) DEFAULT NULL,
+  `position` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -186,13 +181,7 @@ INSERT INTO `productos` (`id_producto`, `id_categoria`, `nombre`, `precio`, `act
 (86, 26, 'Pinchos de pollo con dips', 0.00, 1, '2025-01-30 22:34:44', '2025-01-30 22:34:44', NULL, NULL, NULL, NULL, NULL),
 (87, 26, 'Mini tarta de jamón y queso', 0.00, 1, '2025-01-30 22:34:44', '2025-01-30 22:34:44', NULL, NULL, NULL, NULL, NULL),
 (88, 26, 'Mini tarta de puerro y queso', 0.00, 1, '2025-01-30 22:34:44', '2025-01-30 22:34:44', NULL, NULL, NULL, NULL, NULL),
-(89, 27, 'Plato principal, Bebida, Infusión o mini postre a elección', 0.00, 1, '2025-01-30 22:34:44', '2025-01-30 22:34:44', NULL, NULL, NULL, NULL, NULL),
-(127, 1, 'CAFECITO', NULL, 0, '2025-02-15 15:57:16', '2025-02-15 15:57:25', 'lolo', 9000.00, 0.00, 0.00, 0.00),
-(128, 33, 'PRODUCTO PRUEBA ksa', 2000.00, 0, '2025-02-15 20:11:56', '2025-02-15 20:20:32', 'sakhd', NULL, NULL, NULL, NULL),
-(129, 1, 'CAFE PRUEBA', NULL, 0, '2025-02-15 20:13:18', '2025-02-15 20:13:26', 'lalsa', 2000.00, 3000.00, 4000.00, 5000.00),
-(130, 1, 'V', NULL, 0, '2025-02-15 20:18:18', '2025-02-15 20:18:36', '', 1000.00, 2000.00, 665656.00, 4000.00),
-(131, 34, 'PROD P', 100.00, 0, '2025-02-15 20:19:30', '2025-02-15 20:20:21', '', NULL, NULL, NULL, NULL),
-(132, 35, 'PROD PUREBA RAPUIDA', 999.00, 0, '2025-02-15 20:22:54', '2025-02-15 20:23:07', 'DSAD', NULL, NULL, NULL, NULL);
+(89, 27, 'Plato principal, Bebida, Infusión o mini postre a elección', 0.00, 1, '2025-01-30 22:34:44', '2025-01-30 22:34:44', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -203,7 +192,8 @@ INSERT INTO `productos` (`id_producto`, `id_categoria`, `nombre`, `precio`, `act
 CREATE TABLE `secciones` (
   `id_seccion` int(11) NOT NULL,
   `nombre` varchar(50) NOT NULL,
-  `activo` tinyint(1) DEFAULT 1
+  `activo` tinyint(1) DEFAULT 1,
+  `position` INT NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -214,15 +204,7 @@ INSERT INTO `secciones` (`id_seccion`, `nombre`, `activo`) VALUES
 (1, 'Bebidas', 1),
 (2, 'Combos', 1),
 (3, 'Deli', 1),
-(4, 'Almuerzo', 1),
-(5, 'MORFI', 0),
-(6, 'PROBANDO', 0),
-(7, 'Prueba', 0),
-(8, 'Prueba Mobile', 0),
-(9, 'SEXION', 0),
-(10, 'PROBANDO sec', 0),
-(11, 'PRUE PASKSAD', 0),
-(12, 'PRUEBA RAPIDA', 0);
+(4, 'Almuerzo', 1);
 
 --
 -- Índices para tablas volcadas
@@ -268,19 +250,19 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=135;
 
 --
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `id_seccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_seccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Restricciones para tablas volcadas
@@ -302,3 +284,33 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Inicializar las posiciones de las secciones
+SET @pos := 0;
+UPDATE `secciones` SET `position` = @pos := @pos + 1 WHERE `activo` = 1 ORDER BY `id_seccion`;
+
+-- Inicializar las posiciones de las categorías (por sección)
+UPDATE `categorias` c1
+JOIN (
+    SELECT id_categoria, 
+           @rn := IF(@prev = id_seccion, @rn + 1,
+                    IF(@prev := id_seccion, 1, 1)) AS row_number
+    FROM categorias
+    CROSS JOIN (SELECT @prev := NULL, @rn := 0) AS vars
+    WHERE activo = 1
+    ORDER BY id_seccion, id_categoria
+) c2 ON c1.id_categoria = c2.id_categoria
+SET c1.position = c2.row_number;
+
+-- Inicializar las posiciones de los productos (por categoría)
+UPDATE `productos` p1
+JOIN (
+    SELECT id_producto, 
+           @rn := IF(@prev = id_categoria, @rn + 1,
+                    IF(@prev := id_categoria, 1, 1)) AS row_number
+    FROM productos
+    CROSS JOIN (SELECT @prev := NULL, @rn := 0) AS vars
+    WHERE activo = 1
+    ORDER BY id_categoria, id_producto
+) p2 ON p1.id_producto = p2.id_producto
+SET p1.position = p2.row_number;

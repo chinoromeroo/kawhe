@@ -267,8 +267,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrativo - Kawhe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
+    <link rel="shortcut icon" href="../images/ISOLOGO-KAWHE.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg nav-panel">
@@ -310,92 +312,163 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <?php
                 // Obtener secciones
-                $query_secciones = "SELECT * FROM secciones WHERE activo = 1";
+                $query_secciones = "SELECT * FROM secciones WHERE activo = 1 ORDER BY position";
                 $result_secciones = mysqli_query($conexion, $query_secciones);
                 
-                echo '<div class="row">';
+                echo '<div class="row sortable-sections">';
                 
                 while($seccion = mysqli_fetch_assoc($result_secciones)) {
                     $columnClass = ($seccion['nombre'] == 'Deli') ? 'col-12' : 'col-md-6';
                     
-                    echo '<div class="' . $columnClass . ' mb-5">';
+                    echo '<div class="' . $columnClass . ' mb-5 sortable-section" data-id="' . $seccion['id_seccion'] . '">';
                     echo '<h2 class="menu-title text-center mb-4 editable" 
                              data-type="seccion" 
-                             data-id="' . $seccion['id_seccion'] . '">' . $seccion['nombre'] . '</h2>';
+                             data-id="' . $seccion['id_seccion'] . '">
+                             <i class="fas fa-grip-vertical handle-icon"></i> 
+                             ' . $seccion['nombre'] . '
+                         </h2>';
                     
                     if($seccion['nombre'] == 'Deli') {
+                        // Obtener categorías para la sección DELI
+                        $query_categorias = "SELECT * FROM categorias WHERE id_seccion = {$seccion['id_seccion']} AND activo = 1 ORDER BY position";
+                        $result_categorias = mysqli_query($conexion, $query_categorias);
+                        
                         echo '<div class="row">';
-                    }
-                    
-                    // Obtener categorías
-                    $query_categorias = "SELECT * FROM categorias WHERE id_seccion = {$seccion['id_seccion']} AND activo = 1";
-                    $result_categorias = mysqli_query($conexion, $query_categorias);
-                    
-                    while($categoria = mysqli_fetch_assoc($result_categorias)) {
-                        if($seccion['nombre'] == 'Deli') {
-                            echo '<div class="col-md-6">';
+                        echo '<div class="col-md-6 sortable-categories">';  // Primera columna
+                        
+                        $count = 0;
+                        $total_categorias = mysqli_num_rows($result_categorias);
+                        $mitad = ceil($total_categorias / 2);
+                        
+                        // Almacenar las categorías en un array para poder recorrerlas dos veces
+                        $categorias = [];
+                        while($categoria = mysqli_fetch_assoc($result_categorias)) {
+                            $categorias[] = $categoria;
                         }
                         
-                        echo '<div class="menu-category mb-4">';
-                        
-                        // Mostrar header de categoría
-                        if($categoria['nombre'] === 'Cafés') {
-                            echo '<div class="categoria-header d-flex justify-content-between align-items-center">';
-                            echo '<h3 class="categoria-title mb-0 editable" data-type="categoria" data-id="' . $categoria['id_categoria'] . '">' . $categoria['nombre'] . '</h3>';
-                            echo '<div class="coffee-sizes">';
-                            echo '<i class="fas fa-coffee coffee-icon size-s"></i>';
-                            echo '<i class="fas fa-coffee coffee-icon size-m"></i>';
-                            echo '<i class="fas fa-coffee coffee-icon size-l"></i>';
-                            echo '<i class="fas fa-coffee coffee-icon size-xl"></i>';
-                            echo '</div>';
-                            echo '</div>';
-                        } else {
-                            echo '<h3 class="categoria-title mb-3 editable" data-type="categoria" data-id="' . $categoria['id_categoria'] . '">' . $categoria['nombre'] . '</h3>';
-                        }
-                        
-                        // Obtener productos
-                        $query_productos = "SELECT * FROM productos WHERE id_categoria = {$categoria['id_categoria']} AND activo = 1";
-                        $result_productos = mysqli_query($conexion, $query_productos);
-                        
-                        while($producto = mysqli_fetch_assoc($result_productos)) {
-                            echo '<div class="menu-item editable" data-type="producto" data-id="' . $producto['id_producto'] . '">';
-                            echo '<div class="producto-info">';
-                            echo '<div class="producto-nombre">' . $producto['nombre'] . '</div>';
-                            if(!empty($producto['descripcion'])) {
-                                echo '<div class="producto-descripcion">' . $producto['descripcion'] . '</div>';
+                        // Recorrer las categorías para mostrarlas en dos columnas
+                        foreach($categorias as $index => $categoria) {
+                            if($count == $mitad) {
+                                echo '</div>'; // Cerrar primera columna
+                                echo '<div class="col-md-6 sortable-categories">'; // Iniciar segunda columna
                             }
-                            echo '</div>';
                             
+                            echo '<div class="menu-category mb-4 sortable-category" data-id="' . $categoria['id_categoria'] . '">';
+                            echo '<h3 class="categoria-title mb-3 editable" data-type="categoria" data-id="' . $categoria['id_categoria'] . '">
+                                    <i class="fas fa-grip-vertical handle-icon"></i> 
+                                    ' . $categoria['nombre'] . '
+                                  </h3>';
+                            
+                            // Obtener productos
+                            $query_productos = "SELECT * FROM productos WHERE id_categoria = {$categoria['id_categoria']} AND activo = 1 ORDER BY position";
+                            $result_productos = mysqli_query($conexion, $query_productos);
+                            
+                            echo '<div class="sortable-products">';
+                            while($producto = mysqli_fetch_assoc($result_productos)) {
+                                echo '<div class="menu-item editable sortable-product" data-type="producto" data-id="' . $producto['id_producto'] . '">';
+                                echo '<i class="fas fa-grip-vertical handle-icon"></i>';
+                                echo '<div class="producto-info">';
+                                echo '<div class="producto-nombre">' . $producto['nombre'] . '</div>';
+                                if(!empty($producto['descripcion'])) {
+                                    echo '<div class="producto-descripcion">' . $producto['descripcion'] . '</div>';
+                                }
+                                echo '</div>';
+                                
+                                if($categoria['nombre'] === 'Cafés') {
+                                    echo '<div class="precios-cafe">';
+                                    echo '<div class="precio-size">' . ($producto['precio_chico'] > 0 ? '$' . number_format($producto['precio_chico'], 0) : '-') . '</div>';
+                                    echo '<div class="precio-size">' . ($producto['precio_mediano'] > 0 ? '$' . number_format($producto['precio_mediano'], 0) : '-') . '</div>';
+                                    echo '<div class="precio-size">' . ($producto['precio_grande'] > 0 ? '$' . number_format($producto['precio_grande'], 0) : '-') . '</div>';
+                                    echo '<div class="precio-size">' . ($producto['precio_extra_grande'] > 0 ? '$' . number_format($producto['precio_extra_grande'], 0) : '-') . '</div>';
+                                    echo '</div>';
+                                } else {
+                                    if($producto['precio'] > 0) {
+                                        echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
+                                    }
+                                }
+                                echo '</div>';
+                            }
+                            echo '</div>'; // sortable-products
+                            echo '</div>'; // menu-category
+                            
+                            $count++;
+                        }
+                        
+                        echo '</div>'; // Cerrar última columna
+                        echo '</div>'; // Cerrar row
+                    } else {
+                        // Obtener categorías
+                        $query_categorias = "SELECT * FROM categorias WHERE id_seccion = {$seccion['id_seccion']} AND activo = 1 ORDER BY position";
+                        $result_categorias = mysqli_query($conexion, $query_categorias);
+                        
+                        echo '<div class="sortable-categories">';
+                        
+                        while($categoria = mysqli_fetch_assoc($result_categorias)) {
+                            echo '<div class="menu-category mb-4 sortable-category" data-id="' . $categoria['id_categoria'] . '">';
+                            
+                            // Mostrar header de categoría
                             if($categoria['nombre'] === 'Cafés') {
-                                echo '<div class="precios-cafe">';
-                                echo '<div class="precio-size">' . ($producto['precio_chico'] > 0 ? '$' . number_format($producto['precio_chico'], 0) : '-') . '</div>';
-                                echo '<div class="precio-size">' . ($producto['precio_mediano'] > 0 ? '$' . number_format($producto['precio_mediano'], 0) : '-') . '</div>';
-                                echo '<div class="precio-size">' . ($producto['precio_grande'] > 0 ? '$' . number_format($producto['precio_grande'], 0) : '-') . '</div>';
-                                echo '<div class="precio-size">' . ($producto['precio_extra_grande'] > 0 ? '$' . number_format($producto['precio_extra_grande'], 0) : '-') . '</div>';
+                                echo '<div class="categoria-header d-flex justify-content-between align-items-center">';
+                                echo '<h3 class="categoria-title mb-0 editable" data-type="categoria" data-id="' . $categoria['id_categoria'] . '">
+                                        <i class="fas fa-grip-vertical handle-icon"></i> 
+                                        ' . $categoria['nombre'] . '
+                                      </h3>';
+                                echo '<div class="coffee-sizes">';
+                                echo '<i class="fas fa-coffee coffee-icon size-s"></i>';
+                                echo '<i class="fas fa-coffee coffee-icon size-m"></i>';
+                                echo '<i class="fas fa-coffee coffee-icon size-l"></i>';
+                                echo '<i class="fas fa-coffee coffee-icon size-xl"></i>';
+                                echo '</div>';
                                 echo '</div>';
                             } else {
-                                if($producto['precio'] > 0) {
-                                    echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
-                                }
+                                echo '<h3 class="categoria-title mb-3 editable" data-type="categoria" data-id="' . $categoria['id_categoria'] . '">
+                                        <i class="fas fa-grip-vertical handle-icon"></i> 
+                                        ' . $categoria['nombre'] . '
+                                      </h3>';
                             }
-                            echo '</div>';
+                            
+                            // Obtener productos
+                            $query_productos = "SELECT * FROM productos WHERE id_categoria = {$categoria['id_categoria']} AND activo = 1 ORDER BY position";
+                            $result_productos = mysqli_query($conexion, $query_productos);
+                            
+                            echo '<div class="sortable-products">';
+                            
+                            while($producto = mysqli_fetch_assoc($result_productos)) {
+                                echo '<div class="menu-item editable sortable-product" data-type="producto" data-id="' . $producto['id_producto'] . '">';
+                                echo '<i class="fas fa-grip-vertical handle-icon"></i>';
+                                echo '<div class="producto-info">';
+                                echo '<div class="producto-nombre">' . $producto['nombre'] . '</div>';
+                                if(!empty($producto['descripcion'])) {
+                                    echo '<div class="producto-descripcion">' . $producto['descripcion'] . '</div>';
+                                }
+                                echo '</div>';
+                                
+                                if($categoria['nombre'] === 'Cafés') {
+                                    echo '<div class="precios-cafe">';
+                                    echo '<div class="precio-size">' . ($producto['precio_chico'] > 0 ? '$' . number_format($producto['precio_chico'], 0) : '-') . '</div>';
+                                    echo '<div class="precio-size">' . ($producto['precio_mediano'] > 0 ? '$' . number_format($producto['precio_mediano'], 0) : '-') . '</div>';
+                                    echo '<div class="precio-size">' . ($producto['precio_grande'] > 0 ? '$' . number_format($producto['precio_grande'], 0) : '-') . '</div>';
+                                    echo '<div class="precio-size">' . ($producto['precio_extra_grande'] > 0 ? '$' . number_format($producto['precio_extra_grande'], 0) : '-') . '</div>';
+                                    echo '</div>';
+                                } else {
+                                    if($producto['precio'] > 0) {
+                                        echo '<div class="producto-precio">$' . number_format($producto['precio'], 0) . '</div>';
+                                    }
+                                }
+                                echo '</div>';
+                            }
+                            
+                            echo '</div>'; // sortable-products
+                            echo '</div>'; // menu-category
                         }
                         
-                        echo '</div>';
-                        
-                        if($seccion['nombre'] == 'Deli') {
-                            echo '</div>';
-                        }
+                        echo '</div>'; // sortable-categories
                     }
                     
-                    if($seccion['nombre'] == 'Deli') {
-                        echo '</div>';
-                    }
-                    
-                    echo '</div>';
+                    echo '</div>'; // col
                 }
                 
-                echo '</div>';
+                echo '</div>'; // row
                 ?>
             </div>
         </section>
@@ -712,6 +785,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     alert('Error al procesar la solicitud: ' + error.message);
                 }
             };
+
+            // Inicializar Sortable para secciones
+            new Sortable(document.querySelector('.sortable-sections'), {
+                animation: 150,
+                handle: '.handle-icon',
+                onEnd: function(evt) {
+                    updatePositions('seccion', evt.oldIndex, evt.newIndex, evt.item.dataset.id);
+                }
+            });
+
+            // Reemplazar la inicialización de Sortable para categorías con este código
+            document.querySelectorAll('.sortable-categories').forEach(el => {
+                new Sortable(el, {
+                    animation: 150,
+                    handle: '.handle-icon',
+                    group: 'categorias',
+                    onEnd: function(evt) {
+                        // Obtener la sección actual
+                        const seccionElement = evt.to.closest('.sortable-section');
+                        
+                        // Para la sección DELI, necesitamos manejar ambas columnas
+                        if (seccionElement.querySelector('.row')) { // Es la sección DELI
+                            const allCategories = [];
+                            // Obtener categorías de ambas columnas en orden
+                            seccionElement.querySelectorAll('.sortable-category').forEach(category => {
+                                allCategories.push(category);
+                            });
+                            
+                            // Calcular el nuevo índice considerando todas las categorías
+                            const newIndex = allCategories.indexOf(evt.item);
+                            
+                            // Encontrar el índice original considerando ambas columnas
+                            const oldCategories = [];
+                            const oldContainer = evt.from.closest('.sortable-section');
+                            oldContainer.querySelectorAll('.sortable-category').forEach(category => {
+                                if (category !== evt.item) {
+                                    oldCategories.push(category);
+                                }
+                            });
+                            const oldIndex = evt.oldIndex;
+                            
+                            updatePositions('categoria', oldIndex, newIndex, evt.item.dataset.id);
+                        } else {
+                            // Para otras secciones, mantener el comportamiento actual
+                            const allCategories = Array.from(seccionElement.querySelectorAll('.sortable-category'));
+                            const newIndex = allCategories.indexOf(evt.item);
+                            updatePositions('categoria', evt.oldIndex, newIndex, evt.item.dataset.id);
+                        }
+                    }
+                });
+            });
+
+            // Inicializar Sortable para todos los productos
+            document.querySelectorAll('.sortable-products').forEach(el => {
+                new Sortable(el, {
+                    animation: 150,
+                    handle: '.handle-icon',
+                    onEnd: function(evt) {
+                        updatePositions('producto', evt.oldIndex, evt.newIndex, evt.item.dataset.id);
+                    }
+                });
+            });
+
+            // Función para actualizar posiciones
+            async function updatePositions(type, oldIndex, newIndex, id) {
+                try {
+                    const response = await fetch('update_positions.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            type: type,
+                            oldIndex: oldIndex,
+                            newIndex: newIndex,
+                            id: id
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (!result.success) {
+                        console.error('Error al actualizar posiciones:', result.error);
+                        alert('Error al actualizar el orden. Por favor, recarga la página.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al actualizar el orden. Por favor, recarga la página.');
+                }
+            }
         });
     </script>
 </body>

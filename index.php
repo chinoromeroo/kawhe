@@ -13,6 +13,7 @@ include("conexion.php");
     <title>Kawhe Café & Deli</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="shortcut icon" href="images/ISOLOGO-KAWHE.png" type="image/x-icon">
 </head>
 <body>
     <header>
@@ -34,7 +35,7 @@ include("conexion.php");
                 <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                     <ul class="navbar-nav">
                         <?php
-                        $query_nav = "SELECT * FROM secciones WHERE activo = 1";
+                        $query_nav = "SELECT * FROM secciones WHERE activo = 1 ORDER BY position";
                         $result_nav = mysqli_query($conexion, $query_nav);
                         
                         while($seccion = mysqli_fetch_assoc($result_nav)) {
@@ -54,7 +55,7 @@ include("conexion.php");
             <div class="container">
                 <?php
                 // Secciones
-                $query_secciones = "SELECT * FROM secciones WHERE activo = 1";
+                $query_secciones = "SELECT * FROM secciones WHERE activo = 1 ORDER BY position";
                 $result_secciones = mysqli_query($conexion, $query_secciones);
                 
                 echo '<div class="row">';
@@ -70,7 +71,10 @@ include("conexion.php");
                     }
                     
                     // Categorías
-                    $query_categorias = "SELECT * FROM categorias WHERE id_seccion = {$seccion['id_seccion']} AND activo = 1";
+                    $query_categorias = "SELECT * FROM categorias 
+                                        WHERE id_seccion = {$seccion['id_seccion']} 
+                                        AND activo = 1 
+                                        ORDER BY position";
                     $result_categorias = mysqli_query($conexion, $query_categorias);
                     
                     while($categoria = mysqli_fetch_assoc($result_categorias)) {
@@ -99,7 +103,8 @@ include("conexion.php");
                                               precio_chico, precio_mediano, precio_grande, precio_extra_grande 
                                        FROM productos 
                                        WHERE id_categoria = {$categoria['id_categoria']} 
-                                       AND activo = 1";
+                                       AND activo = 1 
+                                       ORDER BY position";
                         $result_productos = mysqli_query($conexion, $query_productos);
                         
                         while($producto = mysqli_fetch_assoc($result_productos)) {

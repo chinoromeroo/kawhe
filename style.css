@@ -592,9 +592,53 @@ main {
         font-size: 1rem;
     }
     .coffee-sizes {
-        gap: 1.8rem;
+        gap: 2rem;
     }
     .precios-cafe {
-        gap: 0.5rem;
+        gap: 0.7rem;
     }
+    .menu-section [class*="col-"] {
+        padding: 0;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+    .container, .container-md, .container-sm {
+        max-width: 960px !important;
+    }
+}
+/* @media (min-width: 768px) and (max-width: 843px) {
+    .container, .container-sm {
+        margin: auto !important;
+    }
+} */
+
+/* ---------Drag & Drop--------- */
+.handle-icon {
+    cursor: grab;
+    color: var(--color-verde-oscuro);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin-right: 8px;
+}
+
+.menu-item:hover .handle-icon,
+.menu-category:hover .handle-icon,
+.menu-title:hover .handle-icon {
+    opacity: 1;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+    background-color: var(--color-verde-principal) !important;
+}
+
+.sortable-chosen {
+    background-color: rgba(194,206,184,0.2);
+}
+
+.sortable-drag {
+    opacity: 0.9;
+    background-color: white;
+    box-shadow: 0 4px 6px var(--color-sombra);
 }
